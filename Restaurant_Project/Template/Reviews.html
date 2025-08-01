@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+    {% load static %}
+    <!-- Mobile Specific Meta -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Favicon-->
+    <link rel="shortcut icon" href="{% static 'img/fav.png' %}">
+    <!-- Author Meta -->
+    <meta name="author" content="codepixer">
+    <!-- Meta Description -->
+    <meta name="description" content="">
+    <!-- Meta Keyword -->
+    <meta name="keywords" content="">
+    <!-- meta character set -->
+    <meta charset="UTF-8">
+    <!-- Site Title -->
+    <title>Coffee - Review</title>
+
+    <link href="https://fonts.googleapis.com/css?family=Poppins:100,200,400,300,500,600,700" rel="stylesheet"> 
+    <!-- CSS -->
+    <link rel="stylesheet" href="{% static 'css/linearicons.css' %}">
+    <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+    <link rel="stylesheet" href="{% static 'css/magnific-popup.css' %}">
+    <link rel="stylesheet" href="{% static 'css/nice-select.css' %}">					
+    <link rel="stylesheet" href="{% static 'css/animate.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/owl.carousel.css' %}"> <!-- Added for carousel -->
+    <link rel="stylesheet" href="{% static 'css/owl.theme.default.min.css' %}"> <!-- Added for carousel theme -->
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <style>
+        .star .fa-star {
+            color: #ccc; /* Default gray color for unselected stars */
+        }
+        .star .fa-star.checked {
+            color: #ffca08; /* Yellow color for selected stars */
+        }
+        .owl-theme .owl-nav {
+            position: relative;
+            top: auto;
+            left: auto;
+            right: auto;
+            margin-top: 20px; /* Space above the arrows */
+            text-align: center;
+            z-index: 1;
+        }
+
+        .owl-theme .owl-nav [class*='owl-'] {
+            position: relative;
+            background: none !important; /* Remove default background */
+            border: none !important; /* Remove default border */
+            font-size: 0; /* Hide default text */
+            width: 40px;
+            height: 40px;
+            line-height: 40px;
+            cursor: pointer;
+            display: inline-block;
+            margin: 0 10px; /* Space between arrows */
+        }
+
+        .owl-theme .owl-nav .owl-prev {
+            left: auto; /* Remove absolute positioning */
+            transform: none;
+        }
+
+        .owl-theme .owl-nav .owl-next {
+            right: auto; /* Remove absolute positioning */
+            transform: none;
+        }
+
+        .owl-theme .owl-nav .owl-prev::before,
+        .owl-theme .owl-nav .owl-next::before {
+            content: "";
+            display: block;
+            width: 0;
+            height: 0;
+            border-style: solid;
+        }
+
+        .owl-theme .owl-nav .owl-prev::before {
+            border-width: 8px 12px 8px 0;
+            border-color: transparent #5c4033 transparent transparent;
+            margin-left: 8px;
+        }
+
+        .owl-theme .owl-nav .owl-next::before {
+            border-width: 8px 0 8px 12px;
+            border-color: transparent transparent transparent #5c4033;
+            margin-left: 8px;
+        }
+
+        .owl-theme .owl-nav [class*='owl-']:hover::before {
+            border-color: transparent #d3c4b0 transparent transparent;
+        }
+
+        .owl-theme .owl-nav .owl-next:hover::before {
+            border-color: transparent transparent transparent #d3c4b0;
+        }
+    </style>
+</head>
+<body>
+    <header id="header" id="home">
+        <div class="header-top">
+            <div class="container">
+                <div class="row justify-content-end">
+                    <div class="col-lg-8 col-sm-4 col-8 header-top-right no-padding">
+                        <ul>
+                            <li>Mon-Fri: 8am to 2pm</li>
+                            <li>Sat-Sun: 11am to 4pm</li>
+                            <li><a href="tel:(012) 6985 236 7512">(012) 6985 236 7512</a></li>				  					
+                        </ul>
+                    </div>
+                </div>			  					
+            </div>
+        </div>			  	
+        <div class="container">
+            <div class="row align-items-center justify-content-between d-flex">
+                <div id="logo">
+                    <a href="index.html"><img src="{% static 'img/logo.png' %}" alt="Coffee Shop Logo" title="" /></a>
+                </div>
+                <nav id="nav-menu-container">
+                    <ul class="nav-menu">                        
+                        <li><a href="{% url 'home' %}">Home</a></li>
+                        <li><a href="{% url 'about' %}">About</a></li>
+                        <li><a href="{% url 'menu' %}">Coffee</a></li>
+                        <li><a href="{% url 'review' %}">Review</a></li>
+                        <li><a href="{% url 'book' %}">Book Table</a></li>
+                    </ul>
+                </nav><!-- #nav-menu-container -->		    		
+            </div>
+        </div>
+    </header><!-- #header -->
+
+    {% block content %}
+    
+    <!-- Start review Area -->
+    <section class="review-area section-gap" id="review">
+        <div class="container">
+            <div class="row d-flex justify-content-center">
+                <div class="menu-content pb-60 col-lg-10">
+                    <div class="title text-center">
+                        <h1 class="mb-10">What kind of Coffee we serve for you</h1>
+                        <p>Who are in extremely love with eco friendly system.</p>
+                    </div>
+                </div>
+            </div>						
+            <div class="row">
+                <div class="col-lg-6 col-md-6 single-review">
+                    <img src="{% static 'img/r1.png' %}" alt="">
+                    <div class="title d-flex flex-row">
+                        <h4>lorem ipusm</h4>
+                        <div class="star">
+                            <span class="fa fa-star checked"></span>
+                            <span class="fa fa-star checked"></span>
+                            <span class="fa fa-star checked"></span>
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>								
+                        </div>
+                    </div>
+                    <p>Accessories Here you can find the best computer accessory for your laptop, monitor, printer, scanner, speaker. Here you can find the best computer accessory for your laptop, monitor, printer, scanner, speaker.</p>
+                </div>	
+                <div class="col-lg-6 col-md-6 single-review">
+                    <img src="{% static 'img/r2.png' %}" alt="">
+                    <div class="title d-flex flex-row">
+                        <h4>lorem ipusm</h4>
+                        <div class="star">
+                            <span class="fa fa-star checked"></span>
+                            <span class="fa fa-star checked"></span>
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>								
+                        </div>
+                    </div>
+                    <p>Accessories Here you can find the best computer accessory for your laptop, monitor, printer, scanner, speaker. Here you can find the best computer accessory for your laptop, monitor, printer, scanner, speaker.</p>
+                </div>	
+            </div>
+            <div class="row counter-row">
+                <div class="col-lg-3 col-md-6 single-counter">
+                    <h1 class="counter">2536</h1>
+                    <p>Happy Client</p>
+                </div>
+                <div class="col-lg-3 col-md-6 single-counter">
+                    <h1 class="counter">7562</h1>
+                    <p>Total Projects</p>
+                </div>
+                <div class="col-lg-3 col-md-6 single-counter">
+                    <h1 class="counter">2013</h1>
+                    <p>Cups Coffee</p>
+                </div>
+                <div class="col-lg-3 col-md-6 single-counter">
+                    <h1 class="counter">10536</h1>
+                    <p>Total Submitted</p>
+                </div>																		
+            </div>
+        </div>	
+    </section>
+    <!-- End review Area -->
+
+    <!-- Start Customer Reviews Carousel -->
+    <section class="customer-reviews-area section-gap">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="title text-center mb-5">
+                        <h1 class="mb-10" style="color: #5c4033;">Customer Reviews</h1>
+                        <p>See what our customers are saying about us.</p>
+                    </div>
+                    <div class="owl-carousel customer-reviews-carousel owl-theme"> <!-- Added owl-theme -->
+                        {% for review in reviews %}
+                        <div class="single-review-card p-3">
+                            <div class="d-flex align-items-center mb-3">
+                                <img src="{% static 'img/p.png' %}" alt="Reviewer Icon" class="review-icon mr-3" style="width: 40px; height: 40px; object-fit: cover; border: 1px solid #d3c4b0;">
+                                <div>
+                                    <h5 style="color: #5c4033;">{{ review.username }}</h5>
+                                    <div class="star">
+                                        {% for i in "12345"|make_list %}
+                                            <span class="fa fa-star {% if forloop.counter <= review.rating %}checked{% endif %}"></span>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="text-muted">{{ review.description|truncatechars:150 }}</p>
+                        </div>
+                        {% empty %}
+                        <div class="single-review-card p-3 text-center">
+                            <p>No reviews yet.</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <!-- Error Display Section -->
+                    <div class="review-errors text-center mt-3" style="color: #5c4033;">
+                        {% for review in reviews %}
+                            {% if not review.username or not review.description %}
+                                <p>Error: Missing data for review by {{ review.username|default:'Unknown' }} - Please ensure username and description are provided.</p>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- End Customer Reviews Carousel -->
+
+    <!-- Start Customer Review Input Area -->
+    <section class="review-input-area section-gap" id="add-review">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="card shadow-sm" style="border-color: #d3c4b0;">
+                        <div class="card-body">
+                            <h3 class="text-center mb-4" style="color: #5c4033;">Leave Your Review</h3>
+                            <form method="post" action="{% url 'submit_review' %}">
+                                {% csrf_token %}
+                                <div class="form-group mb-3">
+                                    <label for="review_name" class="font-weight-bold" style="color: #5c4033;">Your Name</label>
+                                    <input type="text" class="form-control" id="review_name" name="name" required placeholder="Enter your name">
+                                    <div class="invalid-feedback">Please enter your name.</div>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label for="review_description" class="font-weight-bold" style="color: #5c4033;">Your Review</label>
+                                    <textarea class="form-control" id="review_description" name="description" rows="4" required placeholder="Share your experience"></textarea>
+                                    <div class="invalid-feedback">Please write your review.</div>
+                                </div>
+                                <div class="form-group mb-4">
+                                    <p style="color: #5c4033;"><b>Rating</b></p>
+                                    <label for="review_stars" class="font-weight-bold" style="color: #5c4033;"></label>
+                                    <select class="form-control nice-select" id="review_stars" name="stars" required>
+                                        <option value="" disabled selected>Select your rating</option>
+                                        <option value="1">1 Star</option>
+                                        <option value="2">2 Stars</option>
+                                        <option value="3">3 Stars</option>
+                                        <option value="4">4 Stars</option>
+                                        <option value="5">5 Stars</option>
+                                    </select>
+                                    <div class="invalid-feedback">Please select a rating.</div>
+                                </div>
+                                <div class="text-center">
+                                    <button type="submit" class="primary-btn text-uppercase" style="background-color: #5c4033; border-color: #5c4033; padding: 10px 20px;">Submit Review</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {% endblock content %}
+
+    <!-- start footer Area -->		
+    <footer class="footer-area section-gap">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-5 col-md-6 col-sm-6">
+                    <div class="single-footer-widget">
+                        <h6>About Us</h6>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore dolore magna aliqua.</p>
+                        <p class="footer-text">
+                            Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="fa fa-heart-o" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
+                        </p>								
+                    </div>
+                </div>
+                <div class="col-lg-5  col-md-6 col-sm-6">
+                    <div class="single-footer-widget">
+                        <h6>Newsletter</h6>
+                        <p>Stay update with our latest</p>
+                        <div class="" id="mc_embed_signup">
+                            <form target="_blank" novalidate="true" action="https://spondonit.us12.list-manage.com/subscribe/post?u=1462626880ade1ac87bd9c93a&amp;id=92a4423d01" method="get" class="form-inline">
+                                <input class="form-control" name="EMAIL" placeholder="Enter Email" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Enter Email '" required="" type="email">
+                                <button class="click-btn btn btn-default"><i class="fa fa-long-arrow-right" aria-hidden="true"></i></button>
+                                <div style="position: absolute; left: -5000px;">
+                                    <input name="b_36c4fd991d266f23781ded980_aefe40901a" tabindex="-1" value="" type="text">
+                                </div>
+                                <div class="info pt-20"></div>
+                            </form>
+                        </div>
+                    </div>
+                </div>						
+                <div class="col-lg-2 col-md-6 col-sm-6 social-widget">
+                    <div class="single-footer-widget">
+                        <h6>Follow Us</h6>
+                        <p>Let us be social</p>
+                        <div class="footer-social d-flex align-items-center">
+                            <a href="#"><i class="fa fa-facebook"></i></a>
+                            <a href="#"><i class="fa fa-twitter"></i></a>
+                            <a href="#"><i class="fa fa-dribbble"></i></a>
+                            <a href="#"><i class="fa fa-behance"></i></a>
+                        </div>
+                    </div>
+                </div>							
+            </div>
+        </div>
+    </footer>	
+    <!-- End footer Area -->	
+
+    <script src="{% static 'js/vendor/jquery-2.2.4.min.js' %}"></script>
+    <script src="{% static 'js/vendor/bootstrap.min.js' %}"></script>			
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBhOdIF3Y9382fqJYt5I_sswSrEw5eihAA" async defer></script>
+    <script src="{% static 'js/easing.min.js' %}"></script>			
+    <script src="{% static 'js/hoverIntent.js' %}"></script>
+    <script src="{% static 'js/superfish.min.js' %}"></script>	
+    <script src="{% static 'js/jquery.ajaxchimp.min.js' %}"></script>
+    <script src="{% static 'js/jquery.magnific-popup.min.js' %}"></script>	
+    <script src="{% static 'js/owl.carousel.min.js' %}"></script> <!-- Ensure this is included -->
+    <script src="{% static 'js/jquery.sticky.js' %}"></script>
+    <script src="{% static 'js/jquery.nice-select.min.js' %}"></script>			
+    <script src="{% static 'js/parallax.min.js' %}"></script>	
+    <script src="{% static 'js/waypoints.min.js' %}"></script>
+    <script src="{% static 'js/jquery.counterup.min.js' %}"></script>					
+    <script src="{% static 'js/mail-script.js' %}"></script>	
+    <script src="{% static 'js/main.js' %}"></script>
+    <script>
+        $(document).ready(function(){
+            $('.customer-reviews-carousel').owlCarousel({
+                loop: true,
+                margin: 20,
+                nav: true,
+                dots: false,
+                autoplay: true,
+                autoplayTimeout: 3000,
+                autoplayHoverPause: true,
+                responsive: {
+                    0: {
+                        items: 1
+                    },
+                    600: {
+                        items: 2
+                    },
+                    1000: {
+                        items: 3
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

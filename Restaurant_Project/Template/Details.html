@@ -1,0 +1,200 @@
+<!-- Modal -->
+<div class="modal fade" id="orderModal" tabindex="-1" role="dialog" aria-labelledby="orderModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content" style="border-radius: 15px; box-shadow: 0 20px 60px rgba(0,0,0,0.15); border: none;">
+            <div class="modal-header" style="background: linear-gradient(135deg, #f8f1e9 0%, #e8d5c4 100%); border-bottom: 2px solid #d3c4b0; border-radius: 15px 15px 0 0; padding: 25px 30px;">
+                <h5 class="modal-title" id="orderModalLabel" style="color: #5c4033; font-weight: 700; font-size: 1.4rem; margin: 0;"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="opacity: 0.7; transition: all 0.3s ease;">
+                    <span aria-hidden="true" style="font-size: 1.5rem; color: #5c4033;">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body p-0">
+                <div class="card" style="border: none; border-radius: 0 0 15px 15px; box-shadow: none;">
+                    <div class="card-body p-4">
+                        <div class="row">
+                            <div class="col-lg-5 mb-4">
+                                <div class="text-center position-relative">
+                                    <div class="image-container" style="position: relative; overflow: hidden; border-radius: 12px; box-shadow: 0 8px 25px rgba(92, 64, 51, 0.15); transition: all 0.4s ease;">
+                                        <img src="" alt="" id="modalProductImage" class="img-fluid product-image" style="width: 100%; height: 280px; object-fit: cover; border-radius: 12px; transition: all 0.4s ease; transform: scale(1);" onload="this.style.transform='scale(1.05)'; setTimeout(() => this.style.transform='scale(1)', 300);">
+                                        <div class="image-overlay" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(45deg, rgba(92, 64, 51, 0.1), rgba(211, 196, 176, 0.1)); border-radius: 12px; opacity: 0; transition: opacity 0.3s ease;"></div>
+                                    </div>
+                                    <div class="price-badge" style="position: absolute; top: 15px; right: 15px; background: linear-gradient(135deg, #5c4033, #8b6f47); color: white; padding: 8px 16px; border-radius: 25px; font-weight: 600; font-size: 1.1rem; box-shadow: 0 4px 15px rgba(92, 64, 51, 0.3); transform: translateY(-10px); opacity: 0; transition: all 0.4s ease;">
+                                        <span class="product-price-display"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-7">
+                                <div class="product-info mb-4">
+                                    <h4 class="card-title mb-3 product-price" style="color: #5c4033; font-weight: 600; font-size: 1.8rem; margin-bottom: 15px;"></h4>
+                                    <p class="card-text product-description mb-4" style="color: #6c757d; font-size: 1rem; line-height: 1.7; background: #f8f9fa; padding: 15px; border-radius: 8px; border-left: 4px solid #5c4033;"></p>
+                                </div>
+                                
+                                <form id="orderForm" method="post" action="">
+                                    {% csrf_token %}
+                                    
+                                    <!-- Sugar Level Section -->
+                                    <div class="form-group mb-4">
+                                        <label for="sugar" class="form-label" style="color: #5c4033; font-weight: 600; font-size: 1.1rem; margin-bottom: 10px; display: flex; align-items: center;">
+                                            <i class="fa fa-coffee" style="margin-right: 8px; color: #8b6f47;"></i>
+                                            Sugar Level
+                                        </label>
+                                        <div class="custom-select-wrapper" style="position: relative;">
+                                            <select class="form-control custom-select" id="sugar" name="sugar" required style="border: 2px solid #e9ecef; border-radius: 10px; padding: 12px 15px; font-size: 1rem; background: white; transition: all 0.3s ease; appearance: none; cursor: pointer;">
+                                            <option value="" disabled selected>Select sugar level</option>
+                                            <option value="0">No Sugar</option>
+                                            <option value="1">1 Spoon</option>
+                                            <option value="2">2 Spoons</option>
+                                            <option value="3">3 Spoons</option>
+                                        </select>
+                                            <div class="select-arrow" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: #5c4033; pointer-events: none; transition: transform 0.3s ease;">
+                                                <i class="fa fa-chevron-down"></i>
+                                            </div>
+                                        </div>
+                                        <div class="invalid-feedback" style="color: #dc3545; font-size: 0.9rem; margin-top: 5px;">Please select a sugar level.</div>
+                                    </div>
+
+                                    <!-- Spoon Preference Section -->
+                                    <div class="form-group mb-4">
+                                        <label for="spoon" class="form-label" style="color: #5c4033; font-weight: 600; font-size: 1.1rem; margin-bottom: 10px; display: flex; align-items: center;">
+                                            <i class="fa fa-cutlery" style="margin-right: 8px; color: #8b6f47;"></i>
+                                            Spoon Preference
+                                        </label>
+                                        <div class="custom-select-wrapper" style="position: relative;">
+                                            <select class="form-control custom-select" id="spoon" name="spoon" required style="border: 2px solid #e9ecef; border-radius: 10px; padding: 12px 15px; font-size: 1rem; background: white; transition: all 0.3s ease; appearance: none; cursor: pointer;">
+                                            <option value="" disabled selected>Select spoon preference</option>
+                                            <option value="plastic">Plastic Spoon</option>
+                                            <option value="metal">Metal Spoon</option>
+                                            <option value="none">No Spoon</option>
+                                        </select>
+                                            <div class="select-arrow" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: #5c4033; pointer-events: none; transition: transform 0.3s ease;">
+                                                <i class="fa fa-chevron-down"></i>
+                                            </div>
+                                        </div>
+                                        <div class="invalid-feedback" style="color: #dc3545; font-size: 0.9rem; margin-top: 5px;">Please select a spoon preference.</div>
+                                    </div>
+
+                                    <!-- Extra Demands Section -->
+                                    <div class="form-group mb-4">
+                                        <label for="extra_demands" class="form-label" style="color: #5c4033; font-weight: 600; font-size: 1.1rem; margin-bottom: 10px; display: flex; align-items: center;">
+                                            <i class="fa fa-edit" style="margin-right: 8px; color: #8b6f47;"></i>
+                                            Extra Requests
+                                        </label>
+                                        <textarea class="form-control" id="extra_demands" name="extra_demands" rows="4" placeholder="Enter any extra requests (e.g., extra milk, no ice, special instructions)" style="border: 2px solid #e9ecef; border-radius: 10px; padding: 15px; font-size: 1rem; resize: none; transition: all 0.3s ease; background: white;"></textarea>
+                                        <div class="invalid-feedback" style="color: #dc3545; font-size: 0.9rem; margin-top: 5px;">Please provide any extra demands or leave blank.</div>
+                                    </div>
+
+                                    <!-- Submit Button Section -->
+                                    <div class="text-center">
+                                        <button type="submit" class="btn btn-primary order-submit-btn" style="background: linear-gradient(135deg, #5c4033 0%, #8b6f47 100%); border: none; border-radius: 25px; padding: 15px 40px; font-size: 1.1rem; font-weight: 600; color: white; box-shadow: 0 8px 25px rgba(92, 64, 51, 0.3); transition: all 0.3s ease; position: relative; overflow: hidden;">
+                                            <span id="submitText">Add to Order</span>
+                                            <span id="loadingSpinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true" style="margin-left: 8px;"></span>
+                                            <div class="btn-overlay" style="position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); transition: left 0.5s ease;"></div>
+                                        </button>
+                                        <div id="successMessage" class="mt-3 text-success d-none" style="font-weight: 600; font-size: 1rem;">
+                                            <i class="fa fa-check-circle"></i> Order added successfully!
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Custom Select Styling */
+.custom-select:focus {
+    border-color: #5c4033 !important;
+    box-shadow: 0 0 0 0.2rem rgba(92, 64, 51, 0.25) !important;
+    transform: translateY(-2px);
+}
+
+.custom-select-wrapper:hover .select-arrow {
+    transform: translateY(-50%) rotate(180deg);
+}
+
+/* Button Hover Effects */
+.order-submit-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 35px rgba(92, 64, 51, 0.4) !important;
+}
+
+.order-submit-btn:hover .btn-overlay {
+    left: 100%;
+}
+
+.order-submit-btn:active {
+    transform: translateY(-1px);
+}
+
+/* Image Hover Effects */
+.image-container:hover img {
+    transform: scale(1.05) !important;
+}
+
+.image-container:hover .image-overlay {
+    opacity: 1;
+}
+
+/* Modal Animation */
+.modal.fade .modal-dialog {
+    transform: scale(0.8);
+    transition: transform 0.3s ease;
+}
+
+.modal.show .modal-dialog {
+    transform: scale(1);
+}
+
+/* Form Field Animations */
+.form-control:focus {
+    border-color: #5c4033 !important;
+    box-shadow: 0 0 0 0.2rem rgba(92, 64, 51, 0.25) !important;
+    transform: translateY(-2px);
+}
+
+/* Price Badge Animation */
+.price-badge.show {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+}
+
+/* Bouncy Animation for Image */
+@keyframes bounceIn {
+    0% { transform: scale(0.3); opacity: 0; }
+    50% { transform: scale(1.05); }
+    70% { transform: scale(0.9); }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.product-image.loaded {
+    animation: bounceIn 0.6s ease;
+}
+
+/* Smooth transitions for all elements */
+* {
+    transition: all 0.3s ease;
+    }
+
+/* Custom scrollbar for textarea */
+textarea::-webkit-scrollbar {
+    width: 8px;
+}
+
+textarea::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+textarea::-webkit-scrollbar-thumb {
+    background: #5c4033;
+    border-radius: 4px;
+}
+
+textarea::-webkit-scrollbar-thumb:hover {
+    background: #8b6f47;
+}
+</style>

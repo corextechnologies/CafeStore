@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+    {% load static %}
+    <!-- Mobile Specific Meta -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Favicon-->
+    <link rel="shortcut icon" href="{% static 'img/fav.png' %}">
+    <!-- Author Meta -->
+    <meta name="author" content="codepixer">
+    <!-- Meta Description -->
+    <meta name="description" content="">
+    <!-- Meta Keyword -->
+    <meta name="keywords" content="">
+    <!-- meta character set -->
+    <meta charset="UTF-8">
+    <!-- Site Title -->
+    <title>{% block title %}Coffee-Booking{% endblock title %}</title>
+
+    <link href="https://fonts.googleapis.com/css?family=Poppins:100,200,400,300,500,600,700" rel="stylesheet"> 
+    <!-- CSS -->
+    <link rel="stylesheet" href="{% static 'css/linearicons.css' %}">
+    <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+    <link rel="stylesheet" href="{% static 'css/magnific-popup.css' %}">
+    <link rel="stylesheet" href="{% static 'css/nice-select.css' %}">					
+    <link rel="stylesheet" href="{% static 'css/animate.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/owl.carousel.css' %}">
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+</head>
+<body>
+    <header id="header" id="home">
+        <div class="header-top">
+            <div class="container">
+                <div class="row justify-content-end">
+                    <div class="col-lg-8 col-sm-4 col-8 header-top-right no-padding">
+                        <ul>
+                            <li>Mon-Fri: 8am to 2pm</li>
+                            <li>Sat-Sun: 11am to 4pm</li>
+                            <li><a href="tel:(012) 6985 236 7512">(012) 6985 236 7512</a></li>				  					
+                        </ul>
+                    </div>
+                </div>			  					
+            </div>
+        </div>			  	
+        <div class="container">
+            <div class="row align-items-center justify-content-between d-flex">
+                <div id="logo">
+                    <a href="index.html"><img src="{% static 'img/logo.png' %}" alt="Coffee Shop Logo" title="" /></a>
+                </div>
+                <nav id="nav-menu-container">
+                    <ul class="nav-menu">
+                        <li{% if request.path == '/' %} class="menu-active"{% endif %}><a href="{% url 'home' %}">Home</a></li>
+                        <li{% if request.path == '/about/' %} class="menu-active"{% endif %}><a href="{% url 'about' %}">About</a></li>
+                        <li{% if request.path == '/menu/' %} class="menu-active"{% endif %}><a href="{% url 'menu' %}">Coffee</a></li>
+                        <li{% if request.path == '/review/' %} class="menu-active"{% endif %}><a href="{% url 'review' %}">Review</a></li>
+                        <li{% if request.path == '/book/' %} class="menu-active"{% endif %}><a href="{% url 'book' %}">Book Table</a></li>
+                    </ul>
+                </nav><!-- #nav-menu-container -->		    		
+            </div>
+        </div>
+    </header><!-- #header -->
+
+{% block content %}
+<section class="booking-area section-gap" id="book">
+    <div class="container">
+        <div class="row d-flex justify-content-center">
+            <div class="menu-content pb-60 col-lg-10">
+                <div class="title text-center">
+                    <h1 class="mb-10">Book Your Table</h1>
+                    <p>Choose a slot and reserve your spot for a coffee experience.</p>
+                    <p><b>Make your time better with us.</b></p>
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <!-- Booking Form -->
+                <form class="booking-form" action="{% url 'book' %}" method="post" id="bookingForm">
+                    {% csrf_token %}
+                    <div class="form-group mb-3">
+                        <label for="name">Full Name</label>
+                        <input type="text" class="form-control" id="name" name="name" placeholder="Enter your full name" required>
+                    </div>
+                    <p>Number of Guests</p>
+                    <div class="form-group mb-3">
+                        <label for="total_person"></label>
+                        <select class="form-control nice-select" id="total_person" name="total_person" required>
+                            <option value="" disabled selected>Please select</option>
+                            <option value="1">1 Guest</option>
+                            <option value="2">2 Guests</option>
+                            <option value="3">3 Guests</option>
+                            <option value="4">4 Guests</option>
+                            <option value="5">5 Guests</option>
+                            <option value="6">6+ Guests</option>
+                        </select>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="email">Email Address</label>
+                        <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email address" required>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" class="form-control" id="phone" name="phone" placeholder="Enter your phone number" required>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="date">Date</label>
+                        <input type="date" class="form-control" id="date" name="date" min="2025-07-30" required>
+                    </div>
+                    <div style="display: flex; justify-content: center; margin-top: 20px;">
+                        <button type="button" class="primary-btn text-uppercase" style="background-color: #5c4033; border-color: #5c4033;" onclick="showBookingPopup()">Confirm Booking</button>
+                    </div>
+
+                    <!-- Popup Modal (hidden by default) -->
+                    <div id="bookingPopup" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.5); z-index:9999; align-items:center; justify-content:center;">
+                        <div style="background:#fff; padding:30px; border-radius:8px; max-width:400px; margin:auto; position:relative;">
+                            <!-- You can fill this popup content as you like -->
+                            <span style="position:absolute; top:10px; right:15px; cursor:pointer; font-size:20px;" onclick="closeBookingPopup()">&times;</span>
+                            <div id="popupContent">
+                                <!-- Your popup content goes here -->
+                                <h4>Booking Confirmation</h4>
+                                <p>Thanks for choosing us!</p>
+                                <b>We will contact you soon.</b>
+                                <p><strong>📧 Check your email for booking confirmation!</strong></p>
+                                <p>You can Contact us at: <a href="mailto:info@cafecoffee.com">info@cafecoffee.com</a></p>
+                                <p>Or call us at: <a href="tel:(012) 6985 236 7512">(012) 6985 236 7512</a></p>
+                                <div style="display: flex; justify-content: center; margin-top: 20px;">
+                                    <button class="primary-btn text-uppercase" style="background-color: #5c4033; border-color: #5c4033;" onclick="submitBookingForm()">Confirm & Submit</button>
+                                    <button class="primary-btn text-uppercase" style="background-color: #6c757d; border-color: #6c757d; margin-left: 10px;" onclick="closeBookingPopup()">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <script>
+                    function showBookingPopup() {
+                        // Validate form before showing popup
+                        var form = document.getElementById('bookingForm');
+                        if (form.checkValidity()) {
+                            document.getElementById('bookingPopup').style.display = 'flex';
+                        } else {
+                            // Trigger form validation
+                            form.reportValidity();
+                        }
+                    }
+                    
+                    function closeBookingPopup() {
+                        document.getElementById('bookingPopup').style.display = 'none';
+                    }
+                    
+                    function submitBookingForm() {
+                        // Submit the form
+                        document.getElementById('bookingForm').submit();
+                        // Close the popup
+                        closeBookingPopup();
+                    }
+                    </script>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock content %}
+
+    <script src="{% static 'js/vendor/jquery-2.2.4.min.js' %}"></script>
+    <script src="{% static 'js/vendor/bootstrap.min.js' %}"></script>			
+    <script src="{% static 'js/jquery.nice-select.min.js' %}"></script>			
+    <script src="{% static 'js/main.js' %}"></script>
+
+<script>
+function selectBooking(date, time) {
+    // Since selected date and time fields are removed, this function can be adjusted or removed
+    // For now, it will scroll to the form without setting values
+    document.getElementById('bookingForm').scrollIntoView({ behavior: 'smooth' });
+}
+</script>
+
+    <!-- start footer Area -->		
+    <footer class="footer-area section-gap">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-5 col-md-6 col-sm-6">
+                    <div class="single-footer-widget">
+                        <h6>About Us</h6>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore dolore magna aliqua.</p>
+                        <p class="footer-text">
+                            Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="fa fa-heart-o" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
+                        </p>								
+                    </div>
+                </div>
+                <div class="col-lg-5  col-md-6 col-sm-6">
+                    <div class="single-footer-widget">
+                        <h6>Newsletter</h6>
+                        <p>Stay update with our latest</p>
+                        <div class="" id="mc_embed_signup">
+                            <form target="_blank" novalidate="true" action="https://spondonit.us12.list-manage.com/subscribe/post?u=1462626880ade1ac87bd9c93a&amp;id=92a4423d01" method="get" class="form-inline">
+                                <input class="form-control" name="EMAIL" placeholder="Enter Email" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Enter Email '" required="" type="email">
+                                <button class="click-btn btn btn-default"><i class="fa fa-long-arrow-right" aria-hidden="true"></i></button>
+                                <div style="position: absolute; left: -5000px;">
+                                    <input name="b_36c4fd991d266f23781ded980_aefe40901a" tabindex="-1" value="" type="text">
+                                </div>
+                                <div class="info pt-20"></div>
+                            </form>
+                        </div>
+                    </div>
+                </div>						
+                <div class="col-lg-2 col-md-6 col-sm-6 social-widget">
+                    <div class="single-footer-widget">
+                        <h6>Follow Us</h6>
+                        <p>Let us be social</p>
+                        <div class="footer-social d-flex align-items-center">
+                            <a href="#"><i class="fa fa-facebook"></i></a>
+                            <a href="#"><i class="fa fa-twitter"></i></a>
+                            <a href="#"><i class="fa fa-dribbble"></i></a>
+                            <a href="#"><i class="fa fa-behance"></i></a>
+                        </div>
+                    </div>
+                </div>							
+            </div>
+        </div>
+    </footer>	
+    <!-- End footer Area -->	
+
+    <script src="{% static 'js/vendor/jquery-2.2.4.min.js' %}"></script>
+    <script src="{% static 'js/vendor/bootstrap.min.js' %}"></script>			
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBhOdIF3Y9382fqJYt5I_sswSrEw5eihAA"></script>
+    <script src="{% static 'js/easing.min.js' %}"></script>			
+    <script src="{% static 'js/hoverIntent.js' %}"></script>
+    <script src="{% static 'js/superfish.min.js' %}"></script>	
+    <script src="{% static 'js/jquery.ajaxchimp.min.js' %}"></script>
+    <script src="{% static 'js/jquery.magnific-popup.min.js' %}"></script>	
+    <script src="{% static 'js/owl.carousel.min.js' %}"></script>			
+    <script src="{% static 'js/jquery.sticky.js' %}"></script>
+    <script src="{% static 'js/jquery.nice-select.min.js' %}"></script>			
+    <script src="{% static 'js/parallax.min.js' %}"></script>	
+    <script src="{% static 'js/waypoints.min.js' %}"></script>
+    <script src="{% static 'js/jquery.counterup.min.js' %}"></script>					
+    <script src="{% static 'js/mail-script.js' %}"></script>	
+    <script src="{% static 'js/main.js' %}"></script>	
+</body>
+</html>

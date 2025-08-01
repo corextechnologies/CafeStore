@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+    {% load static %}
+    <!-- Mobile Specific Meta -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Favicon-->
+    <link rel="shortcut icon" href="{% static 'img/fav.png' %}">
+    <!-- Author Meta -->
+    <meta name="author" content="codepixer">
+    <!-- Meta Description -->
+    <meta name="description" content="">
+    <!-- Meta Keyword -->
+    <meta name="keywords" content="">
+    <!-- meta character set -->
+    <meta charset="UTF-8">
+    <!-- Site Title -->
+    <title>Coffee - Menu</title>
+
+    <!-- Preload critical fonts -->
+    <link rel="preload" href="https://fonts.googleapis.com/css?family=Poppins:400,500&display=swap" as="style">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:400,500&display=swap">
+    
+    <!-- Critical CSS inline -->
+    <style>
+        /* Critical path CSS here */
+        body { font-family: 'Poppins', sans-serif; margin: 0; padding: 0; }
+        .header { width: 100%; position: fixed; z-index: 100; }
+        
+        /* Product Image Styling for Consistent Size */
+        .single-menu .card-img-top {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            object-position: center;
+            border-radius: 8px;
+            transition: transform 0.3s ease;
+        }
+        
+        .single-menu .card-img-top:hover {
+            transform: scale(1.05);
+        }
+        
+        .single-menu .card-body {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        
+        .single-menu .card-text {
+            flex-grow: 1;
+            margin-bottom: 1rem;
+        }
+        
+        /* Cart functionality improvements */
+        .cart-count {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .cart-item-row:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .order-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(92, 64, 51, 0.4);
+        }
+        
+        @media (max-width: 768px) {
+            .single-menu .card-img-top {
+                height: 200px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .single-menu .card-img-top {
+                height: 180px;
+            }
+        }
+    </style>
+    
+    <!-- Critical CSS -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" href="{% static 'css/linearicons.css' %}">
+    <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/magnific-popup.css' %}">
+    <link rel="stylesheet" href="{% static 'css/nice-select.css' %}">
+    <link rel="stylesheet" href="{% static 'css/animate.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/owl.carousel.css' %}">
+</head>
+<body>
+    <header id="header" id="home">
+        <div class="header-top">
+            <div class="container">
+                <div class="row justify-content-end">
+                    <div class="col-lg-8 col-sm-4 col-8 header-top-right no-padding">
+                        <ul>
+                            <li>Mon-Fri: 8am to 2pm</li>
+                            <li>Sat-Sun: 11am to 4pm</li>
+                            <li><a href="tel:(012) 6985 236 7512">(012) 6985 236 7512</a></li>				  					
+                        </ul>
+                    </div>
+                </div>			  					
+            </div>
+        </div>			  	
+        <div class="container">
+            <div class="row align-items-center justify-content-between d-flex">
+                <div id="logo">
+                    <a href="index.html"><img loading="lazy" src="{% static 'img/logo.png' %}" alt="Coffee Shop Logo" title="" /></a>
+                </div>
+                <nav id="nav-menu-container">
+                    <ul class="nav-menu">
+                        <li><a href="{% url 'home' %}">Home</a></li>
+                        <li><a href="{% url 'about' %}">About</a></li>
+                        <li><a href="{% url 'menu' %}">Coffee</a></li>
+                        <li><a href="{% url 'review' %}">Review</a></li>
+                        <li><a href="{% url 'book' %}">Book Table</a></li>
+                        <li class="cart-item">
+                            <a href="#" id="cartIcon" style="position: relative; display: flex; align-items: center;">
+                                <i class="fa fa-shopping-cart" style="font-size: 1.2rem; color: #5c4033;"></i>
+                                <span id="cartCount" class="cart-count" style="position: absolute; top: -8px; right: -8px; background: #e74c3c; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: bold; opacity: 0; transition: all 0.3s ease;">0</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav><!-- #nav-menu-container -->		    		
+            </div>
+        </div>
+    </header><!-- #header -->   
+    
+<!-- Start menu Area -->
+<section class="menu-area section-gap" id="menu">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                {% for category in categories %}
+                <div class="category-section mb-5">
+                    <h2 class="text-center mb-4" style="color: #5c4033;">{{ category.Name }}</h2>
+                    <div class="row">
+                        {% for item in category.items.all %}
+                        <div class="col-md-4 col-12 mb-4">
+                            <div class="single-menu card h-100 shadow-sm" style="border-color: #d3c4b0;">
+                                <div class="card-body">
+                                    {% if item.image %}
+                                    <img src="{{ item.image.url }}" alt="Image of {{ item.name }}" class="card-img-top img-fluid mb-3" loading="lazy">
+                                    {% endif %}
+                                    <div class="title-div justify-content-between d-flex mb-3">
+                                        <h4 class="card-title">{{ item.name }}</h4>
+                                        <p class="price text-primary font-weight-bold">${{ item.price }}</p>
+                                    </div>
+                                    <p class="card-text">{{ item.description }}</p>
+                                    <div class="mt-3 text-center">
+                                        <button type="button" class="primary-btn text-uppercase order-btn" style="background-color: #5c4033; border-color: #5c4033;" data-toggle="modal" data-target="#orderModal" data-product-id="{{ item.pk }}">Order</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="col-12 text-center">
+                            <p class="text-muted">No items available in this category.</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-12 text-center">
+                    <p class="text-muted">No categories available.</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+<!-- End menu Area -->
+
+<!-- Include Order Modal -->
+{% include 'Details.html' %}
+
+    <!-- Cart Modal -->
+    <div class="modal fade" id="cartModal" tabindex="-1" role="dialog" aria-labelledby="cartModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content" style="border-radius: 15px; box-shadow: 0 20px 60px rgba(0,0,0,0.15); border: none;">
+                <div class="modal-header" style="background: linear-gradient(135deg, #f8f1e9 0%, #e8d5c4 100%); border-bottom: 2px solid #d3c4b0; border-radius: 15px 15px 0 0; padding: 25px 30px;">
+                    <h5 class="modal-title" id="cartModalLabel" style="color: #5c4033; font-weight: 700; font-size: 1.4rem; margin: 0;">
+                        <i class="fa fa-shopping-cart" style="margin-right: 10px;"></i>Shopping Cart
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="opacity: 0.7; transition: all 0.3s ease;">
+                        <span aria-hidden="true" style="font-size: 1.5rem; color: #5c4033;">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body p-4">
+                    <div id="cartItems" style="max-height: 400px; overflow-y: auto;">
+                        <!-- Cart items will be dynamically added here -->
+                    </div>
+                    <div id="emptyCart" class="text-center py-5" style="display: none;">
+                        <i class="fa fa-shopping-cart" style="font-size: 3rem; color: #d3c4b0; margin-bottom: 20px;"></i>
+                        <h5 style="color: #6c757d;">Your cart is empty</h5>
+                        <p style="color: #6c757d;">Add some delicious items to get started!</p>
+                    </div>
+                    <div id="cartSummary" class="mt-4" style="display: none;">
+                        <hr style="border-color: #d3c4b0;">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h6 style="color: #5c4033; font-weight: 600; margin: 0;">Total:</h6>
+                            <h5 id="cartTotal" style="color: #5c4033; font-weight: 700; margin: 0;">$0.00</h5>
+                        </div>
+                        <div class="text-center">
+                            <button type="button" class="btn btn-success" id="checkoutBtn" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%); border: none; border-radius: 25px; padding: 12px 30px; font-weight: 600; color: white; box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3); transition: all 0.3s ease;">
+                                <i class="fa fa-credit-card" style="margin-right: 8px;"></i>Proceed to Checkout
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- start footer Area -->		
+    <footer class="footer-area section-gap">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-5 col-md-6 col-sm-6">
+                    <div class="single-footer-widget">
+                        <h6>About Us</h6>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore dolore magna aliqua.</p>
+                        <p class="footer-text">
+                            Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="fa fa-heart-o" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
+                        </p>								
+                    </div>
+                </div>
+                <div class="col-lg-5  col-md-6 col-sm-6">
+                    <div class="single-footer-widget">
+                        <h6>Newsletter</h6>
+                        <p>Stay update with our latest</p>
+                        <div class="" id="mc_embed_signup">
+                            <form target="_blank" novalidate="true" action="https://spondonit.us12.list-manage.com/subscribe/post?u=1462626880ade1ac87bd9c93a&amp;id=92a4423d01" method="get" class="form-inline">
+                                <input class="form-control" name="EMAIL" placeholder="Enter Email" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Enter Email '" required="" type="email">
+                                <button class="click-btn btn btn-default"><i class="fa fa-long-arrow-right" aria-hidden="true"></i></button>
+                                <div style="position: absolute; left: -5000px;">
+                                    <input name="b_36c4fd991d266f23781ded980_aefe40901a" tabindex="-1" value="" type="text">
+                                </div>
+                                <div class="info pt-20"></div>
+                            </form>
+                        </div>
+                    </div>
+                </div>						
+                <div class="col-lg-2 col-md-6 col-sm-6 social-widget">
+                    <div class="single-footer-widget">
+                        <h6>Follow Us</h6>
+                        <p>Let us be social</p>
+                        <div class="footer-social d-flex align-items-center">
+                            <a href="#"><i class="fa fa-facebook"></i></a>
+                            <a href="#"><i class="fa fa-twitter"></i></a>
+                            <a href="#"><i class="fa fa-dribbble"></i></a>
+                            <a href="#"><i class="fa fa-behance"></i></a>
+                        </div>
+                    </div>
+                </div>							
+            </div>
+        </div>
+    </footer>	
+    <!-- End footer Area -->	
+
+    <!-- Core JS - Load jQuery first, then Bootstrap -->
+    <script src="{% static 'js/vendor/jquery-2.2.4.min.js' %}"></script>
+    <script src="{% static 'js/vendor/bootstrap.min.js' %}"></script>
+    
+    <!-- Load all required jQuery plugins -->
+    <script src="{% static 'js/easing.min.js' %}"></script>
+    <script src="{% static 'js/hoverIntent.js' %}"></script>
+    <script src="{% static 'js/superfish.min.js' %}"></script>
+    <script src="{% static 'js/jquery.ajaxchimp.min.js' %}"></script>
+    <script src="{% static 'js/jquery.magnific-popup.min.js' %}"></script>
+    <script src="{% static 'js/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'js/jquery.sticky.js' %}"></script>
+    <script src="{% static 'js/jquery.nice-select.min.js' %}"></script>
+    <script src="{% static 'js/parallax.min.js' %}"></script>
+    <script src="{% static 'js/waypoints.min.js' %}"></script>
+    <script src="{% static 'js/jquery.counterup.min.js' %}"></script>
+    <script src="{% static 'js/mail-script.js' %}"></script>
+    
+    <!-- Main JS -->
+    <script src="{% static 'js/main.js' %}"></script>
+    
+    <!-- Cart Functionality -->
+    <script>
+        // Global variables
+        let cart = [];
+        let currentProduct = null;
+
+        // Initialize cart from localStorage
+        function initializeCart() {
+            const savedCart = localStorage.getItem('coffeeCart');
+            if (savedCart) {
+                cart = JSON.parse(savedCart);
+                updateCartCount();
+            }
+        }
+
+        // Save cart to localStorage
+        function saveCart() {
+            localStorage.setItem('coffeeCart', JSON.stringify(cart));
+        }
+
+        // Update cart count display
+        function updateCartCount() {
+            const cartCount = document.getElementById('cartCount');
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            
+            if (totalItems > 0) {
+                cartCount.textContent = totalItems;
+                cartCount.style.opacity = '1';
+                cartCount.style.transform = 'scale(1.2)';
+                setTimeout(() => {
+                    cartCount.style.transform = 'scale(1)';
+                }, 200);
+            } else {
+                cartCount.style.opacity = '0';
+            }
+        }
+
+        // Add item to cart
+        function addToCart(product, customization) {
+            console.log('Adding to cart:', product, customization);
+            
+            if (!product || !customization) {
+                console.error('Invalid product or customization data');
+                return;
+            }
+
+            const existingItem = cart.find(item => 
+                item.id === product.id && 
+                item.sugar === customization.sugar && 
+                item.spoon === customization.spoon &&
+                item.extra_demands === customization.extra_demands
+            );
+
+            if (existingItem) {
+                existingItem.quantity += 1;
+                console.log('Updated existing item quantity:', existingItem.quantity);
+            } else {
+                const newItem = {
+                    id: product.id,
+                    name: product.name,
+                    price: product.price,
+                    image: product.image_url,
+                    quantity: 1,
+                    sugar: customization.sugar,
+                    spoon: customization.spoon,
+                    extra_demands: customization.extra_demands
+                };
+                cart.push(newItem);
+                console.log('Added new item to cart:', newItem);
+            }
+
+            saveCart();
+            updateCartCount();
+            showCartNotification();
+            
+            console.log('Current cart:', cart);
+        }
+
+        // Remove item from cart
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            saveCart();
+            updateCartCount();
+            updateCartDisplay();
+        }
+
+        // Update item quantity
+        function updateQuantity(index, change) {
+            cart[index].quantity += change;
+            
+            if (cart[index].quantity <= 0) {
+                removeFromCart(index);
+            } else {
+                saveCart();
+                updateCartCount();
+                updateCartDisplay();
+            }
+        }
+
+        // Show cart notification
+        function showCartNotification() {
+            const existingNotifications = document.querySelectorAll('.cart-notification');
+            existingNotifications.forEach(notification => {
+                document.body.removeChild(notification);
+            });
+
+            const notification = document.createElement('div');
+            notification.className = 'cart-notification';
+            notification.innerHTML = `
+                <div style="position: fixed; top: 20px; right: 20px; background: linear-gradient(135deg, #28a745, #20c997); color: white; padding: 15px 20px; border-radius: 10px; box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3); z-index: 9999; transform: translateX(100%); transition: transform 0.3s ease;">
+                    <i class="fa fa-check-circle" style="margin-right: 8px;"></i>
+                    Item added to cart!
+                </div>
+            `;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.querySelector('div').style.transform = 'translateX(0)';
+            }, 100);
+            
+            setTimeout(() => {
+                notification.querySelector('div').style.transform = 'translateX(100%)';
+                setTimeout(() => {
+                    if (document.body.contains(notification)) {
+                        document.body.removeChild(notification);
+                    }
+                }, 300);
+            }, 2000);
+        }
+
+        // Update cart display
+        function updateCartDisplay() {
+            const cartItems = document.getElementById('cartItems');
+            const emptyCart = document.getElementById('emptyCart');
+            const cartSummary = document.getElementById('cartSummary');
+            const cartTotal = document.getElementById('cartTotal');
+
+            if (!cartItems || !emptyCart || !cartSummary || !cartTotal) {
+                console.error('Cart elements not found');
+                return;
+            }
+
+            if (cart.length === 0) {
+                cartItems.innerHTML = '';
+                emptyCart.style.display = 'block';
+                cartSummary.style.display = 'none';
+            } else {
+                emptyCart.style.display = 'none';
+                cartSummary.style.display = 'block';
+                
+                let total = 0;
+                let itemsHtml = '';
+                
+                cart.forEach((item, index) => {
+                    const itemTotal = parseFloat(item.price) * item.quantity;
+                    total += itemTotal;
+                    
+                    itemsHtml += `
+                        <div class="cart-item-row" style="display: flex; align-items: center; padding: 15px; border: 1px solid #e9ecef; border-radius: 10px; margin-bottom: 10px; background: white; transition: all 0.3s ease;">
+                            <div style="flex: 0 0 60px; margin-right: 15px;">
+                                <img src="${item.image || 'https://via.placeholder.com/60x60/5c4033/ffffff?text=No+Img'}" alt="${item.name}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px;">
+                            </div>
+                            <div style="flex: 1;">
+                                <h6 style="color: #5c4033; font-weight: 600; margin: 0 0 5px 0;">${item.name}</h6>
+                                <p style="color: #6c757d; font-size: 0.9rem; margin: 0;">
+                                    Sugar: ${item.sugar === '0' ? 'No Sugar' : item.sugar + ' Spoon(s)'} | 
+                                    Spoon: ${item.spoon === 'none' ? 'No Spoon' : item.spoon.charAt(0).toUpperCase() + item.spoon.slice(1)}
+                                    ${item.extra_demands ? '<br>Extra: ' + item.extra_demands : ''}
+                                </p>
+                            </div>
+                            <div style="flex: 0 0 100px; text-align: center;">
+                                <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+                                    <button onclick="updateQuantity(${index}, -1)" style="background: #dc3545; color: white; border: none; border-radius: 50%; width: 25px; height: 25px; font-size: 0.8rem; cursor: pointer; transition: all 0.3s ease;">-</button>
+                                    <span style="font-weight: 600; color: #5c4033; min-width: 20px;">${item.quantity}</span>
+                                    <button onclick="updateQuantity(${index}, 1)" style="background: #28a745; color: white; border: none; border-radius: 50%; width: 25px; height: 25px; font-size: 0.8rem; cursor: pointer; transition: all 0.3s ease;">+</button>
+                                </div>
+                            </div>
+                            <div style="flex: 0 0 80px; text-align: right;">
+                                <h6 style="color: #5c4033; font-weight: 600; margin: 0;">$${itemTotal.toFixed(2)}</h6>
+                                <button onclick="removeFromCart(${index})" style="background: none; border: none; color: #dc3545; font-size: 0.8rem; cursor: pointer; padding: 0; margin-top: 5px;">Remove</button>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                cartItems.innerHTML = itemsHtml;
+                cartTotal.textContent = '$' + total.toFixed(2);
+            }
+        }
+
+        // Initialize when document is ready
+        $(document).ready(function() {
+            console.log('Document ready, setting up cart functionality');
+            
+            // Initialize cart
+            initializeCart();
+            updateCartCount();
+            
+            // Cart icon click handler
+            $('#cartIcon').on('click', function(e) {
+                e.preventDefault();
+                updateCartDisplay();
+                $('#cartModal').modal('show');
+            });
+
+            // Order button click handler
+            $('.order-btn').on('click', function(e) {
+                e.preventDefault();
+                var productId = $(this).data('product-id');
+                console.log('Order button clicked, product ID:', productId);
+
+                // Show loading state
+                $(this).prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Loading...');
+
+                $.ajax({
+                    url: '{% url "get_product_detail" 0 %}'.replace('0', productId),
+                    method: 'GET',
+                    dataType: 'json',
+                    timeout: 10000,
+                    success: function(data) {
+                        console.log('AJAX success, response:', data);
+                        currentProduct = data;
+                        
+                        // Update modal content
+                        $('#orderModalLabel').text(data.name || 'Unknown Product');
+                        var priceText = '$' + (parseFloat(data.price) || 0).toFixed(2);
+                        $('.product-price').text(priceText);
+                        $('.product-price-display').text(priceText);
+                        $('.product-description').text(data.description || 'No description available.');
+
+                        // Handle image
+                        var modalImage = $('#modalProductImage');
+                        if (data.image_url && data.image_url.trim() !== '') {
+                            modalImage.attr('src', data.image_url);
+                            modalImage.attr('alt', data.name || 'Product Image');
+                            modalImage.css('display', 'block');
+                        } else {
+                            modalImage.attr('src', 'https://via.placeholder.com/300x200/5c4033/ffffff?text=No+Image');
+                            modalImage.attr('alt', 'Placeholder Image');
+                            modalImage.css('display', 'block');
+                        }
+
+                        // Reset form
+                        $('#orderForm').trigger('reset');
+                        $('#successMessage').addClass('d-none');
+
+                        // Show modal
+                        $('#orderModal').modal('show');
+                        
+                        // Re-enable button
+                        $('.order-btn').prop('disabled', false).html('Order');
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('AJAX error:', status, error);
+                        alert('Error loading product details. Please try again.');
+                        $('.order-btn').prop('disabled', false).html('Order');
+                    }
+                });
+            });
+
+            // Form submission
+            $('#orderForm').on('submit', function(e) {
+                e.preventDefault();
+                
+                if (!currentProduct) {
+                    alert('No product selected!');
+                    return;
+                }
+
+                const formData = {
+                    sugar: $('#sugar').val(),
+                    spoon: $('#spoon').val(),
+                    extra_demands: $('#extra_demands').val()
+                };
+
+                if (!formData.sugar || !formData.spoon) {
+                    alert('Please select sugar level and spoon preference.');
+                    return;
+                }
+
+                // Show loading state
+                var $btn = $(this).find('.order-submit-btn');
+                var $spinner = $('#loadingSpinner');
+                var $submitText = $('#submitText');
+                
+                $btn.prop('disabled', true);
+                $spinner.removeClass('d-none');
+                $submitText.text('Adding to Cart...');
+                
+                // Add to cart
+                setTimeout(function() {
+                    addToCart(currentProduct, formData);
+                    
+                    $spinner.addClass('d-none');
+                    $submitText.text('Added to Cart!');
+                    $('#successMessage').removeClass('d-none');
+                    
+                    // Reset after 1.5 seconds
+                    setTimeout(function() {
+                        $btn.prop('disabled', false);
+                        $submitText.text('Add to Order');
+                        $('#successMessage').addClass('d-none');
+                        $('#orderModal').modal('hide');
+                        currentProduct = null;
+                    }, 1500);
+                }, 1000);
+            });
+        });
+    </script>
+</body>
+</html> 
