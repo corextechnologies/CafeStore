@@ -1,11 +1,13 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from decimal import Decimal
+from encrypted_model_fields.fields import EncryptedCharField, EncryptedTextField, EncryptedIntegerField, EncryptedEmailField
+
 
 # Create your models here.
 
 class ItemList(models.Model):
-    Name = models.CharField(max_length=20, db_index=True)
+    Name = EncryptedCharField(max_length=20, db_index=True)
     
     def __str__(self):
         return self.Name
@@ -16,9 +18,9 @@ class ItemList(models.Model):
         ]
 
 class Items(models.Model):
-    name = models.CharField(max_length=20, db_index=True)
-    description = models.TextField(blank=False)
-    price = models.IntegerField(db_index=True)
+    name = EncryptedCharField(max_length=20, db_index=True)
+    description = EncryptedTextField(blank=False)
+    price = EncryptedIntegerField(db_index=True)
     Category = models.ForeignKey(ItemList, related_name='items', on_delete=models.CASCADE, db_index=True)
     image = models.ImageField(upload_to='menu_items/')
 
@@ -42,14 +44,14 @@ class Order(models.Model):
         ('cancelled', 'Cancelled'),
     ]
     
-    customer_name = models.CharField(max_length=100, db_index=True)
-    customer_email = models.EmailField(db_index=True)
-    customer_phone = models.CharField(max_length=20)
-    customer_address = models.TextField()
+    customer_name = EncryptedCharField(max_length=100, db_index=True)
+    customer_email = EncryptedEmailField(db_index=True)
+    customer_phone = EncryptedCharField(max_length=20)
+    customer_address = EncryptedTextField()
     order_date = models.DateTimeField(auto_now_add=True, db_index=True)
     total_amount = models.DecimalField(max_digits=10, decimal_places=2, db_index=True)
     status = models.CharField(max_length=20, choices=ORDER_STATUS_CHOICES, default='pending', db_index=True)
-    special_instructions = models.TextField(blank=True, null=True)
+    special_instructions = EncryptedTextField(blank=True, null=True)
     
     def __str__(self):
         return f"Order #{self.id} - {self.customer_name} - {self.order_date.strftime('%Y-%m-%d %H:%M')}"
@@ -66,12 +68,12 @@ class Order(models.Model):
 
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, related_name='items', on_delete=models.CASCADE, db_index=True)
-    product_name = models.CharField(max_length=100, db_index=True)
+    product_name = EncryptedCharField(max_length=100, db_index=True)
     product_price = models.DecimalField(max_digits=10, decimal_places=2)
     quantity = models.PositiveIntegerField()
     sugar_level = models.CharField(max_length=20)
     spoon_preference = models.CharField(max_length=20)
-    extra_demands = models.TextField(blank=True, null=True)
+    extra_demands = EncryptedTextField(blank=True, null=True)
     
     def __str__(self):
         return f"{self.product_name} x{self.quantity} - Order #{self.order.id}"
@@ -97,9 +99,9 @@ class OrderItem(models.Model):
         ]
 
 class BookTable(models.Model):
-    name = models.CharField(max_length=50, db_index=True)
-    email = models.EmailField(db_index=True)
-    phone = models.CharField(max_length=15)
+    name = EncryptedCharField(max_length=50, db_index=True)
+    email = EncryptedEmailField(db_index=True)
+    phone = EncryptedCharField(max_length=15)
     date = models.DateField(db_index=True)
     guests = models.IntegerField(
         validators=[MinValueValidator(1), MaxValueValidator(20)]
@@ -116,8 +118,8 @@ class BookTable(models.Model):
         ]
 
 class Review(models.Model):
-    username = models.CharField(max_length=50, db_index=True)
-    description = models.TextField()
+    username = EncryptedCharField(max_length=50, db_index=True)
+    description = EncryptedTextField()
     rating = models.IntegerField(
         validators=[MinValueValidator(1), MaxValueValidator(5)],
         db_index=True

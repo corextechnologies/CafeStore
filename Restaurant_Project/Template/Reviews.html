@@ -211,7 +211,7 @@
                             <div class="d-flex align-items-center mb-3">
                                 <img src="{% static 'img/p.png' %}" alt="Reviewer Icon" class="review-icon mr-3" style="width: 40px; height: 40px; object-fit: cover; border: 1px solid #d3c4b0;">
                                 <div>
-                                    <h5 style="color: #5c4033;">{{ review.username }}</h5>
+                                    <h5 style="color: #5c4033;">{{ review.username|default:"Anonymous" }}</h5>
                                     <div class="star">
                                         {% for i in "12345"|make_list %}
                                             <span class="fa fa-star {% if forloop.counter <= review.rating %}checked{% endif %}"></span>
@@ -219,7 +219,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <p class="text-muted">{{ review.description|truncatechars:150 }}</p>
+                            <p class="text-muted">{{ review.description|default:"No description"|truncatechars:150 }}</p>
                         </div>
                         {% empty %}
                         <div class="single-review-card p-3 text-center">
@@ -296,7 +296,7 @@
                         <h6>About Us</h6>
                         <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore dolore magna aliqua.</p>
                         <p class="footer-text">
-                            Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="fa fa-heart-o" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
+                            Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved </a>
                         </p>								
                     </div>
                 </div>
@@ -369,9 +369,28 @@
                     1000: {
                         items: 3
                     }
-                }
+                },
+                onInitialized: startBlinking, // Start blinking when carousel is initialized
+                onTranslated: startBlinking  // Restart blinking when carousel slides
             });
+        
+            function startBlinking() {
+                // Stop any existing animations
+                $('.customer-reviews-carousel .star .fa-star').stop(true, true);
+        
+                // Apply blinking to visible checked stars
+                $('.customer-reviews-carousel .owl-item.active .star .fa-star.checked').each(function() {
+                    var $star = $(this);
+                    $star.animate({ opacity: 0.3 }, 500, function() {
+                        $star.animate({ opacity: 1 }, 500, function() {
+                            if ($star.closest('.owl-item').hasClass('active')) {
+                                startBlinking(); // Continue blinking for active items
+                            }
+                        });
+                    });
+                });
+            }
         });
-    </script>
+        </script>
 </body>
 </html>

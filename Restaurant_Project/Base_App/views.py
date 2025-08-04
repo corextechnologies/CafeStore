@@ -281,6 +281,7 @@ def BookTableView(request):
     
     return render(request, 'Book_Table.html')
 
+
 def ReviewView(request):
     """
     Optimized review view with caching and pagination.
@@ -291,7 +292,25 @@ def ReviewView(request):
     
     if reviews is None:
         # Cache miss - fetch from database with optimization
-        reviews = Review.objects.select_related().order_by('-id')[:50]  # Limit to 50 most recent
+        reviews = Review.objects.all().order_by('-id')[:50]  # Limit to 50 most recent
+        
+        # Initialize crypter with the encryption key from settings
+        try:
+            crypter = get_crypter(settings.FIELD_ENCRYPTION_KEY)
+            # Decrypt fields for each review
+            decrypted_reviews = []
+            for review in reviews:
+                decrypted_review = {
+                    'id': review.id,
+                    'username': crypter.decrypt(review.username.encode()).decode() if review.username else '',
+                    'description': crypter.decrypt(review.description.encode()).decode() if review.description else '',
+                    'rating': int(review.rating) if review.rating else 0,
+                }
+                decrypted_reviews.append(decrypted_review)
+            reviews = decrypted_reviews
+        except Exception as e:
+            print(f"Decryption error in ReviewView: {str(e)}")
+            messages.error(request, f"Error decrypting reviews: {str(e)}")
         
         # Cache for 15 minutes
         cache.set(cache_key, reviews, 900)
@@ -300,7 +319,6 @@ def ReviewView(request):
         'reviews': reviews,
     }
     return render(request, 'Reviews.html', context)
-
 
 def submit_review(request):
     # Handle POST request to submit a review
@@ -311,14 +329,11 @@ def submit_review(request):
                 description=request.POST['description'],
                 rating=int(request.POST['stars'])  # Changed from stars to rating
             )
+            # Clear the cache to show new review immediately
+            cache.delete('customer_reviews')
             messages.success(request, 'Review submitted successfully!')
             return redirect('review')
         except Exception as e:
-            print(str(e))  # For debugging
+            print(f"Error in submit_review: {str(e)}")  # For debugging
             messages.error(request, f'Error submitting review: {str(e)}')
     return redirect('review')
-
-
-
-
-
