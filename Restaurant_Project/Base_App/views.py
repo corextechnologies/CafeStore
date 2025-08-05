@@ -32,13 +32,13 @@ def MenuView(request):
     if categories is None:
         # Cache miss - fetch from database with optimization
         try:
-            # Use prefetch_related to optimize database queries
-            categories = ItemList.objects.prefetch_related(
+            # Use select_related and prefetch_related for maximum optimization
+            categories = ItemList.objects.select_related().prefetch_related(
                 'items__additional_images'
             ).all()
             
-            # Cache for 15 minutes (reduced for better performance)
-            cache.set(cache_key, categories, 900)
+            # Cache for 30 minutes (increased for better performance)
+            cache.set(cache_key, categories, 1800)
         except Exception as e:
             print(f"Error loading menu categories: {str(e)}")
             # Fallback to empty categories if there's an error
@@ -209,8 +209,8 @@ def process_checkout(request):
                 product_name=item_data.get('name', ''),
                 product_price=Decimal(str(item_data.get('price', 0))),
                 quantity=int(item_data.get('quantity', 1)),
-                sugar_level=item_data.get('sugar_level', ''),
-                spoon_preference=item_data.get('spoon_preference', ''),
+                sugar_level=item_data.get('sugar', ''),
+                spoon_preference=item_data.get('spoon', ''),
                 extra_demands=item_data.get('extra_demands', '')
             )
         

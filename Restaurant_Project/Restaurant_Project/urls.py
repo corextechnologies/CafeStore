@@ -14,6 +14,7 @@ urlpatterns = [
     path('get-product/<int:pk>/', get_product_detail, name='get_product_detail'),
     path('process-checkout/', process_checkout, name='process_checkout'),
     path('test-checkout/', test_checkout_url, name='test_checkout'),
+    path('test-server/', test_server_performance, name='test_server_performance'),
     path('submit_review/', submit_review, name='submit_review'),
 
 ] 

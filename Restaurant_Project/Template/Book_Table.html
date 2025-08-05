@@ -60,7 +60,24 @@
             </div>
         </div>
     </header><!-- #header -->
+    <style>
+        header#header {
+            background-color: #5c4033; /* Full brown header */
+        }
+        .header-top,
+        .nav-menu a,
+        .header-top a {
+            color: white !important;
+        }
+        .nav-menu li.menu-active a {
+            color: #ffc107 !important; /* Highlight active link */
+        }
+        .header-top ul {
+            margin-bottom: 0;
+        }
+    </style>
 
+    
 {% block content %}
 <section class="booking-area section-gap" id="book">
     <div class="container">
@@ -85,7 +102,7 @@
                     <p>Number of Guests</p>
                     <div class="form-group mb-3">
                         <label for="total_person"></label>
-                        <select class="form-control nice-select" id="total_person" name="total_person" required>
+                        <select class="form-control nice-select" id="total_person" name="guests" required>
                             <option value="" disabled selected>Please select</option>
                             <option value="1">1 Guest</option>
                             <option value="2">2 Guests</option>

@@ -54,11 +54,19 @@ class OrderAdmin(admin.ModelAdmin):
         Override save_model to send email notifications when status changes.
         """
         if change:  # Only for existing orders
-            old_obj = Order.objects.get(pk=obj.pk)
-            if old_obj.status != obj.status:
-                # Status has changed, send email notification
-                self.send_status_change_email(obj, old_obj.status, obj.status)
-                messages.success(request, f'Status changed to "{obj.get_status_display()}". Email notification sent to {obj.customer_email}.')
+            try:
+                old_obj = Order.objects.get(pk=obj.pk)
+                if old_obj.status != obj.status:
+                    # Status has changed, send email notification
+                    try:
+                        self.send_status_change_email(obj, old_obj.status, obj.status)
+                        messages.success(request, f'Status changed to "{obj.get_status_display()}". Email notification sent to {obj.customer_email}.')
+                    except Exception as e:
+                        # Don't fail the save if email fails
+                        messages.warning(request, f'Status changed to "{obj.get_status_display()}" but email notification failed: {str(e)}')
+            except Exception as e:
+                # Don't fail the save if there's any error
+                messages.warning(request, f'Status changed but there was an issue: {str(e)}')
         
         super().save_model(request, obj, form, change)
     
@@ -132,10 +140,11 @@ class OrderAdmin(admin.ModelAdmin):
                     from_email=None,  # Uses DEFAULT_FROM_EMAIL from settings
                     recipient_list=[order.customer_email],
                     html_message=html_message,
-                    fail_silently=False,
+                    fail_silently=True,  # Changed to True to prevent hanging
                 )
             except Exception as e:
                 print(f"Error sending status change email: {str(e)}")
+                raise  # Re-raise the exception to be caught by the calling method
 
 # Base_App/admin.py (partial, for ItemsAdmin only)
 @admin.register(Items)

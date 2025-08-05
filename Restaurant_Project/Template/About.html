@@ -60,7 +60,22 @@
             </div>
         </div>
     </header><!-- #header -->
-
+    <style>
+        header#header {
+            background-color: #5c4033; /* Full brown header */
+        }
+        .header-top,
+        .nav-menu a,
+        .header-top a {
+            color: white !important;
+        }
+        .nav-menu li.menu-active a {
+            color: #ffc107 !important; /* Highlight active link */
+        }
+        .header-top ul {
+            margin-bottom: 0;
+        }
+    </style>
     {% block content %}
 <section class="video-sec-area pb-100 pt-40" id="about">
     <div class="container">

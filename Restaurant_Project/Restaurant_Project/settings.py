@@ -54,7 +54,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['195.35.2.20', '127.0.0.1', 'localhost']
 
 
 # Application definition
@@ -85,13 +85,19 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [os.path.join(BASE_DIR, 'Template')],
-        'APP_DIRS': True,
+        'APP_DIRS': False,
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+            ],
+            'loaders': [
+                ('django.template.loaders.cached.Loader', [
+                    'django.template.loaders.filesystem.Loader',
+                    'django.template.loaders.app_directories.Loader',
+                ]),
             ],
         },
     },
@@ -166,22 +172,41 @@ EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 # Performance Optimization Settings
 
 # Static files caching
-# STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
 
-# Cache settings
+# Cache settings - Enhanced for better performance
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
         'LOCATION': 'unique-snowflake',
+        'TIMEOUT': 300,  # 5 minutes default
+        'OPTIONS': {
+            'MAX_ENTRIES': 1000,
+            'CULL_FREQUENCY': 3,
+        }
     }
 }
 
 # Browser caching settings
 CACHE_MIDDLEWARE_SECONDS = 31536000  # 1 year for static files
+CACHE_MIDDLEWARE_KEY_PREFIX = 'restaurant'
 
 # Security headers for caching
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
+
+# Database optimization - handled by dj_database_url configuration above
+
+# Template optimization - loaders are now configured in TEMPLATES above
+
+# Static files optimization
+STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+]
+
+# Compression middleware
+MIDDLEWARE.insert(1, 'django.middleware.gzip.GZipMiddleware')
 
 # Logging configuration
 LOGGING = {
