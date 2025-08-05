@@ -7,7 +7,7 @@ Django==5.2.4
 Pillow==10.4.0
 
 # Email Support
-django-email-utils==1.0.0
+# django-email-utils==1.0.0  # Not used in current implementation
 
 # Environment Variables & Configuration
 python-decouple==3.8
