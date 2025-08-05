@@ -23,6 +23,7 @@ def AboutView(request):
 def MenuView(request):
     """
     Optimized menu view with caching and database optimization.
+    Enhanced for deployment server performance.
     """
     # Try to get categories from cache
     cache_key = 'menu_categories'
@@ -30,49 +31,128 @@ def MenuView(request):
     
     if categories is None:
         # Cache miss - fetch from database with optimization
-        categories = ItemList.objects.prefetch_related('items').all()
-        
-        # Cache for 30 minutes
-        cache.set(cache_key, categories, 1800)
+        try:
+            # Use prefetch_related to optimize database queries
+            categories = ItemList.objects.prefetch_related(
+                'items__additional_images'
+            ).all()
+            
+            # Cache for 15 minutes (reduced for better performance)
+            cache.set(cache_key, categories, 900)
+        except Exception as e:
+            print(f"Error loading menu categories: {str(e)}")
+            # Fallback to empty categories if there's an error
+            categories = []
     
     context = {
         'categories': categories,
     }
     return render(request, 'Menu.html', context)
 
+@csrf_exempt
 def get_product_detail(request, pk):
     """
     AJAX endpoint to get product details with multiple images.
+    Optimized for deployment server performance.
     """
     try:
-        product = get_object_or_404(Items, pk=pk)
+        print(f"Processing get_product_detail request for pk: {pk}")
         
-        # Get all images for the product
+        # Use select_related to optimize database queries
+        product = get_object_or_404(Items.objects.select_related('Category'), pk=pk)
+        print(f"Product found: {product.name}")
+        
+        # Get all images for the product with error handling
         images = []
         if product.image:
-            images.append(product.image.url)
+            try:
+                images.append(product.image.url)
+            except Exception:
+                # If image is corrupted or missing, skip it
+                pass
         
-        # Add additional images
-        for additional_image in product.additional_images.all():
-            images.append(additional_image.image.url)
+        # Add additional images with error handling
+        try:
+            for additional_image in product.additional_images.all():
+                try:
+                    images.append(additional_image.image.url)
+                except Exception:
+                    # Skip corrupted additional images
+                    continue
+        except Exception:
+            # If additional_images relationship fails, continue without them
+            pass
+        
+        # Handle potential encryption errors for each field
+        try:
+            product_name = str(product.name) if product.name else "Unknown Product"
+        except Exception as e:
+            print(f"Error accessing product name: {str(e)}")
+            product_name = "Unknown Product"
+        
+        try:
+            product_description = str(product.description) if product.description else ""
+        except Exception as e:
+            print(f"Error accessing product description: {str(e)}")
+            product_description = ""
+        
+        try:
+            product_price = int(product.price) if product.price else 0
+        except Exception as e:
+            print(f"Error accessing product price: {str(e)}")
+            product_price = 0
         
         data = {
             'id': product.id,
-            'name': product.name,
-            'description': product.description,
-            'price': product.price,
+            'name': product_name,
+            'description': product_description,
+            'price': product_price,
             'image_url': product.image.url if product.image else None,
             'images': images,
         }
+        print(f"Returning data for product {product_name}")
         return JsonResponse(data)
     except Exception as e:
-        return JsonResponse({'error': str(e)}, status=400)
+        print(f"Error in get_product_detail for pk {pk}: {str(e)}")
+        return JsonResponse({'error': 'Product not found or error occurred'}, status=400)
 
 def test_checkout_url(request):
     """
     Test endpoint to verify checkout URL is working.
     """
     return JsonResponse({'status': 'Checkout URL is working'})
+
+@csrf_exempt
+def test_server_performance(request):
+    """
+    Test endpoint to check server performance and response time.
+    """
+    import time
+    start_time = time.time()
+    
+    # Simulate some database operations
+    try:
+        # Count total items
+        total_items = Items.objects.count()
+        # Get first few items
+        sample_items = Items.objects.all()[:5]
+        
+        end_time = time.time()
+        response_time = end_time - start_time
+        
+        return JsonResponse({
+            'status': 'Server is responding',
+            'response_time': f"{response_time:.3f} seconds",
+            'total_items': total_items,
+            'sample_items_count': len(sample_items),
+            'server_time': time.strftime('%Y-%m-%d %H:%M:%S')
+        })
+    except Exception as e:
+        return JsonResponse({
+            'status': 'Error',
+            'error': str(e),
+            'server_time': time.strftime('%Y-%m-%d %H:%M:%S')
+        }, status=500)
 
 @csrf_exempt
 @require_http_methods(['POST'])
