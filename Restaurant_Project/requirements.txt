@@ -27,7 +27,7 @@ django-encrypted-model-fields==0.6.5
 cryptography==41.0.7
 
 # Database (for production) - Comment out if not using PostgreSQL
-psycopg2-binary==2.9.7  # PostgreSQL - uncomment if using PostgreSQL
+# psycopg2-binary==2.9.7  # PostgreSQL - uncomment if using PostgreSQL
 # mysqlclient==2.2.0      # MySQL - uncomment if using MySQL
 
 # Caching (optional)
