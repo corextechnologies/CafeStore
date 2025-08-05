@@ -3,7 +3,8 @@ from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.contrib import messages
-from .models import Items, ItemList, Order, OrderItem, BookTable, Review
+from django import forms
+from .models import Items, ItemList, Order, OrderItem, BookTable, Review, ItemImage
 
 class OrderItemInline(admin.TabularInline):
     """
@@ -12,7 +13,17 @@ class OrderItemInline(admin.TabularInline):
     model = OrderItem
     extra = 0
     readonly_fields = ['product_name', 'product_price', 'quantity', 'sugar_level', 'spoon_preference', 'extra_demands']
-    fields = ['product_name', 'product_price', 'quantity', 'sugar_level', 'spoon_preference', 'extra_demands']
+    fields = ['product_name', 'product_price', 'quantity', 'sugar_level',
+              'spoon_preference', 'extra_demands']
+
+class ItemImageInline(admin.TabularInline):
+    """
+    Inline admin for ItemImage to display additional images within the Items admin.
+    """
+    model = ItemImage
+    extra = 1
+    fields = ['image', 'caption', 'order']
+    ordering = ['order']
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
@@ -126,14 +137,63 @@ class OrderAdmin(admin.ModelAdmin):
             except Exception as e:
                 print(f"Error sending status change email: {str(e)}")
 
+# Base_App/admin.py (partial, for ItemsAdmin only)
 @admin.register(Items)
 class ItemsAdmin(admin.ModelAdmin):
     """
-    Admin interface for menu items.
+    Admin interface for menu items with custom form to handle price field and multiple images.
     """
-    list_display = ['name', 'Category', 'price', 'description']
+    list_display = ['name', 'Category', 'price', 'description', 'image_count']
     list_filter = ['Category']
     search_fields = ['name', 'description']
+    inlines = [ItemImageInline]
+    
+    class ItemsAdminForm(forms.ModelForm):
+        price = forms.IntegerField(min_value=0, max_value=1000000)
+
+        class Meta:
+            model = Items
+            fields = '__all__'
+
+        def clean_price(self):
+            price = self.cleaned_data['price']
+            if price is None:
+                raise forms.ValidationError("Price is required.")
+            try:
+                price = int(price)
+                if price < 0:
+                    raise forms.ValidationError("Price cannot be negative.")
+            except (ValueError, TypeError):
+                raise forms.ValidationError("Price must be a valid integer.")
+            return price
+
+    form = ItemsAdminForm
+    
+    def image_count(self, obj):
+        """Display the number of images for this item"""
+        count = obj.additional_images.count()
+        if obj.image:
+            count += 1
+        return f"{count} image{'s' if count != 1 else ''}"
+    image_count.short_description = 'Images'
+
+@admin.register(ItemImage)
+class ItemImageAdmin(admin.ModelAdmin):
+    """
+    Admin interface for item images.
+    """
+    list_display = ['item', 'caption', 'order', 'image_preview']
+    list_filter = ['item__Category']
+    search_fields = ['item__name', 'caption']
+    ordering = ['item', 'order']
+    
+    def image_preview(self, obj):
+        """Show a small preview of the image"""
+        if obj.image:
+            return f'<img src="{obj.image.url}" style="max-height: 50px; max-width: 50px;" />'
+        return "No image"
+    image_preview.short_description = 'Preview'
+    image_preview.allow_tags = True
 
 @admin.register(ItemList)
 class ItemListAdmin(admin.ModelAdmin):
@@ -141,6 +201,7 @@ class ItemListAdmin(admin.ModelAdmin):
     Admin interface for menu categories.
     """
     list_display = ['Name']
+    search_fields = ['Name']
 
 @admin.register(BookTable)
 class BookTableAdmin(admin.ModelAdmin):
@@ -163,4 +224,3 @@ class ReviewAdmin(admin.ModelAdmin):
 admin.site.site_header = "Restaurant Admin"
 admin.site.index_title = "Welcome to Restaurant Admin"
 admin.site.site_title = "Restaurant Admin Portal"
-
