@@ -4,7 +4,13 @@ from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.contrib import messages
 from django import forms
+from django.core.cache import cache
 from .models import Items, ItemList, Order, OrderItem, BookTable, Review, ItemImage
+
+def clear_menu_cache():
+    """Clear menu-related cache to refresh categories and items"""
+    cache.delete('menu_categories')
+    cache.delete('menu_data')
 
 class OrderItemInline(admin.TabularInline):
     """
@@ -185,6 +191,22 @@ class ItemsAdmin(admin.ModelAdmin):
             count += 1
         return f"{count} image{'s' if count != 1 else ''}"
     image_count.short_description = 'Images'
+    
+    def save_model(self, request, obj, form, change):
+        super().save_model(request, obj, form, change)
+        clear_menu_cache()
+    
+    def delete_model(self, request, obj):
+        super().delete_model(request, obj)
+        clear_menu_cache()
+    
+    def delete_queryset(self, request, queryset):
+        super().delete_queryset(request, queryset)
+        clear_menu_cache()
+    
+    def save_related(self, request, form, formsets, change):
+        super().save_related(request, form, formsets, change)
+        clear_menu_cache()
 
 @admin.register(ItemImage)
 class ItemImageAdmin(admin.ModelAdmin):
@@ -203,6 +225,18 @@ class ItemImageAdmin(admin.ModelAdmin):
         return "No image"
     image_preview.short_description = 'Preview'
     image_preview.allow_tags = True
+    
+    def save_model(self, request, obj, form, change):
+        super().save_model(request, obj, form, change)
+        clear_menu_cache()
+    
+    def delete_model(self, request, obj):
+        super().delete_model(request, obj)
+        clear_menu_cache()
+    
+    def delete_queryset(self, request, queryset):
+        super().delete_queryset(request, queryset)
+        clear_menu_cache()
 
 @admin.register(ItemList)
 class ItemListAdmin(admin.ModelAdmin):
@@ -211,6 +245,18 @@ class ItemListAdmin(admin.ModelAdmin):
     """
     list_display = ['Name']
     search_fields = ['Name']
+
+    def save_model(self, request, obj, form, change):
+        super().save_model(request, obj, form, change)
+        clear_menu_cache()
+    
+    def delete_model(self, request, obj):
+        super().delete_model(request, obj)
+        clear_menu_cache()
+    
+    def delete_queryset(self, request, queryset):
+        super().delete_queryset(request, queryset)
+        clear_menu_cache()
 
 @admin.register(BookTable)
 class BookTableAdmin(admin.ModelAdmin):

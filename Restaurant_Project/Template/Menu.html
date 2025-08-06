@@ -21,45 +21,294 @@
     <link rel="preload" href="https://fonts.googleapis.com/css?family=Poppins:400,500&display=swap" as="style">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:400,500&display=swap">
     
-    <!-- Critical CSS inline -->
+    <!-- Critical CSS inline - Optimized for performance -->
     <style>
         /* Critical path CSS for above-the-fold content */
-        body { font-family: 'Poppins', sans-serif; margin: 0; padding: 0; }
+        * { box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; margin: 0; padding: 0; line-height: 1.6; }
         .header { width: 100%; position: fixed; z-index: 100; background: #5c4033; }
-        .nav-menu { display: flex; list-style: none; margin: 0; padding: 0; }
-        .nav-menu a { color: white; text-decoration: none; padding: 10px 15px; }
-        .menu-area { padding: 80px 0; }
+        .nav-menu { display: flex; list-style: none; margin: 0; padding: 0; flex-wrap: wrap; }
+        .nav-menu a { color: white; text-decoration: none; padding: 10px 15px; transition: color 0.3s ease; }
+        .menu-area { padding: 80px 0; min-height: 100vh; }
         .container { max-width: 1200px; margin: 0 auto; padding: 0 15px; }
         .row { display: flex; flex-wrap: wrap; margin: 0 -15px; }
-        .col-md-4 { flex: 0 0 33.333%; max-width: 33.333%; padding: 0 15px; }
-        .single-menu { background: white; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 30px; overflow: hidden; }
-        .card-img-top { width: 100%; height: 250px; object-fit: cover; transition: transform 0.3s ease; }
-        .card-body { padding: 20px; }
-        .card-title { margin: 0 0 10px 0; color: #5c4033; font-weight: 600; }
-        .price { color: #28a745; font-weight: bold; font-size: 1.2rem; }
-        .order-btn { background: #5c4033; color: white; border: none; padding: 10px 25px; border-radius: 25px; cursor: pointer; transition: all 0.3s ease; }
-        .order-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(92, 64, 51, 0.4); }
         
-        /* Responsive design */
-        @media (max-width: 768px) {
-            .col-md-4 { flex: 0 0 50%; max-width: 50%; }
-            .card-img-top { height: 200px; }
+        /* Optimized card layout */
+        .single-menu { 
+            background: white; 
+            border-radius: 15px; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08); 
+            margin-bottom: 30px; 
+            overflow: hidden; 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid rgba(211, 196, 176, 0.3);
         }
-        @media (max-width: 576px) {
-            .col-md-4 { flex: 0 0 100%; max-width: 100%; }
-            .card-img-top { height: 180px; }
+        
+        .single-menu:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+            border-color: #d3c4b0;
+        }
+        
+        /* Professional image sizing - all images same size */
+        .card-img-top { 
+            width: 100%; 
+            height: 220px; 
+            object-fit: cover; 
+            transition: transform 0.3s ease;
+            background: #f8f9fa;
+            border-radius: 15px 15px 0 0;
+        }
+        
+        .single-menu:hover .card-img-top {
+            transform: scale(1.05);
+        }
+        
+        .card-body { 
+            padding: 0; 
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .card-title { 
+            margin: 0 0 10px 0; 
+            color: #5c4033; 
+            font-weight: 600; 
+            font-size: 1rem;
+            line-height: 1.3;
+        }
+        
+        .price { 
+            color: #28a745; 
+            font-weight: bold; 
+            font-size: 1.1rem; 
+            margin: 0;
+        }
+        
+        .order-btn { 
+            background: linear-gradient(135deg, #5c4033 0%, #8b6f47 100%); 
+            color: white; 
+            border: none; 
+            padding: 8px 20px; 
+            border-radius: 20px; 
+            cursor: pointer; 
+            transition: all 0.3s ease; 
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin-top: auto;
+            box-shadow: 0 2px 10px rgba(92, 64, 51, 0.2);
+        }
+        
+        .order-btn:hover { 
+            transform: translateY(-2px); 
+            box-shadow: 0 6px 20px rgba(92, 64, 51, 0.4); 
+            background: linear-gradient(135deg, #8b6f47 0%, #5c4033 100%);
+        }
+        
+        /* Category Filter Buttons */
+        .category-filter-btn {
+            background: white; 
+            color: #5c4033; 
+            border: 2px solid #5c4033; 
+            padding: 12px 25px; 
+            margin: 8px; 
+            border-radius: 25px; 
+            font-weight: 600; 
+            transition: all 0.3s ease;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        
+        .category-filter-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(92, 64, 51, 0.4) !important;
+        }
+        
+        .category-filter-btn.active {
+            background: linear-gradient(135deg, #5c4033 0%, #8b6f47 100%) !important;
+            color: white !important;
+            border: none !important;
+            box-shadow: 0 4px 15px rgba(92, 64, 51, 0.3) !important;
+        }
+        
+        .category-filter-btn:not(.active):hover {
+            background: linear-gradient(135deg, #5c4033 0%, #8b6f47 100%) !important;
+            color: white !important;
+            border: 2px solid #5c4033 !important;
+        }
+        
+        /* Menu Item Hover Effects */
+        .single-menu:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15) !important;
+        }
+        
+        .single-menu:hover .card-img-top {
+            transform: scale(1.05);
+        }
+        
+        .single-menu:hover .order-btn {
+            background: linear-gradient(135deg, #8b6f47 0%, #5c4033 100%) !important;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(92, 64, 51, 0.4);
+        }
+        
+        /* Menu Item Animation */
+        .menu-item {
+            opacity: 1;
+            transform: scale(1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .menu-item.hidden {
+            opacity: 0;
+            transform: scale(0.8);
+            pointer-events: none;
+            display: none !important;
+        }
+        
+        .menu-item.show {
+            opacity: 1;
+            transform: scale(1);
+            pointer-events: auto;
+            display: block !important;
+        }
+        
+        /* Center items when few items are displayed */
+        #menuItemsContainer {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: stretch;
+            gap: 20px;
+        }
+        
+        /* Ensure proper spacing for single or few items */
+        .menu-item {
+            display: flex;
+            justify-content: center;
+            flex: 0 0 auto;
+        }
+        
+        /* Category Badge */
+        .category-badge .badge {
+            font-size: 0.75rem;
+            padding: 5px 10px;
+            border-radius: 15px;
+            background: #5c4033;
+            color: white;
+        }
+        
+        /* Responsive design - Optimized for all screen sizes */
+        @media (min-width: 1400px) {
+            .menu-item {
+                flex: 0 0 calc(25% - 15px);
+                max-width: calc(25% - 15px);
+            }
+            .card-img-top { height: 300px; }
+        }
+        
+        @media (min-width: 1200px) and (max-width: 1399px) {
+            .menu-item {
+                flex: 0 0 calc(33.333% - 15px);
+                max-width: calc(33.333% - 15px);
+            }
+            .card-img-top { height: 280px; }
+        }
+        
+        @media (min-width: 992px) and (max-width: 1199px) {
+            .menu-item {
+                flex: 0 0 calc(50% - 15px);
+                max-width: calc(50% - 15px);
+            }
+            .card-img-top { height: 260px; }
+        }
+        
+        @media (min-width: 768px) and (max-width: 991px) {
+            .menu-item {
+                flex: 0 0 calc(50% - 15px);
+                max-width: calc(50% - 15px);
+            }
+            .card-img-top { height: 240px; }
+            .category-filter-btn { 
+                padding: 10px 20px; 
+                margin: 5px; 
+                font-size: 0.9rem; 
+            }
+        }
+        
+        @media (min-width: 576px) and (max-width: 767px) {
+            .menu-item {
+                flex: 0 0 calc(100% - 15px);
+                max-width: calc(100% - 15px);
+            }
+            .card-img-top { height: 220px; }
+            .category-filter-btn { 
+                padding: 10px 18px; 
+                margin: 4px; 
+                font-size: 0.85rem; 
+            }
+        }
+        
+        @media (max-width: 575px) {
+            .menu-item {
+                flex: 0 0 calc(100% - 15px);
+                max-width: calc(100% - 15px);
+            }
+            .card-img-top { height: 200px; }
+            .category-filter-btn { 
+                padding: 8px 15px; 
+                margin: 3px; 
+                font-size: 0.8rem; 
+            }
+            .card-body { padding: 15px; }
+            .card-title { font-size: 1rem; }
+            .price { font-size: 1.1rem; }
+        }
+        
+        /* Performance optimizations */
+        .single-menu * {
+            will-change: transform;
+        }
+        
+        /* Loading animation */
+        .loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+        
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        .card-text { 
+            font-size: 0.85rem; 
+            color: #6c757d; 
+            margin-bottom: 10px; 
+            line-height: 1.2;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
         }
     </style>
     
-    <!-- Critical CSS -->
+    <!-- Critical CSS - Load only essential styles first -->
     <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
     <link rel="stylesheet" href="{% static 'css/main.css' %}">
-    <link rel="stylesheet" href="{% static 'css/linearicons.css' %}">
-    <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}">
-    <link rel="stylesheet" href="{% static 'css/magnific-popup.css' %}">
-    <link rel="stylesheet" href="{% static 'css/nice-select.css' %}">
-    <link rel="stylesheet" href="{% static 'css/animate.min.css' %}">
-    <link rel="stylesheet" href="{% static 'css/owl.carousel.css' %}">
+    
+    <!-- Non-critical CSS - Load after page load -->
+    <link rel="preload" href="{% static 'css/linearicons.css' %}" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="{% static 'css/font-awesome.min.css' %}" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="{% static 'css/magnific-popup.css' %}" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="{% static 'css/nice-select.css' %}" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="{% static 'css/animate.min.css' %}" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="{% static 'css/owl.carousel.css' %}" as="style" onload="this.onload=null;this.rel='stylesheet'">
 </head>
 <body>
     <header id="header" id="home">
@@ -118,74 +367,140 @@
 <!-- Start menu Area -->
 <section class="menu-area section-gap" id="menu">
     <div class="container">
-        <div class="row justify-content-center">
+        <!-- Category Filter Buttons -->
+        <div class="row justify-content-center mb-5">
             <div class="col-lg-10">
-                {% for category in categories %}
-                <div class="category-section mb-5">
-                    <h2 class="text-center mb-4" style="color: #5c4033;">{{ category.Name }}</h2>
-                    <div class="row">
-                        {% for item in category.items.all %}
-                        <div class="col-md-4 col-12 mb-4">
-                            <div class="single-menu card h-100 shadow-sm" style="border-color: #d3c4b0;">
-                                <div class="card-body">
-                                    {% if item.all_images %}
-                                    <div id="carousel-{{ item.pk }}" class="carousel slide mb-3" data-ride="carousel">
-                                        <div class="carousel-inner">
-                                            {% for image in item.all_images %}
-                                            <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                                                {% if image and image.url %}
-                                                    <img src="{{ image.url }}" alt="Image of {{ item.name }}" class="card-img-top img-fluid" loading="lazy" style="height: 200px; object-fit: cover;">
-                                                {% else %}
-                                                    <img src="{% static 'img/placeholder.png' %}" alt="No image available" class="card-img-top img-fluid" loading="lazy" style="height: 200px; object-fit: cover; opacity: 0.5;">
-                                                {% endif %}
-                                            </div>
-                                            {% endfor %}
-                                        </div>
-                                        {% if item.all_images|length > 1 %}
-                                        <a class="carousel-control-prev" href="#carousel-{{ item.pk }}" role="button" data-slide="prev">
-                                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                            <span class="sr-only">Previous</span>
-                                        </a>
-                                        <a class="carousel-control-next" href="#carousel-{{ item.pk }}" role="button" data-slide="next">
-                                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                            <span class="sr-only">Next</span>
-                                        </a>
-                                        <ol class="carousel-indicators">
-                                            {% for image in item.all_images %}
-                                            <li data-target="#carousel-{{ item.pk }}" data-slide-to="{{ forloop.counter0 }}" {% if forloop.first %}class="active"{% endif %}></li>
-                                            {% endfor %}
-                                        </ol>
+                <div class="category-filter-section text-center">
+                    <h2 class="mb-4" style="color: #5c4033; font-weight: 700;">Choose Your Category</h2>
+                    <div class="category-buttons-wrapper">
+                        <button class="category-filter-btn active" data-category="all" style="background: linear-gradient(135deg, #5c4033 0%, #8b6f47 100%); color: white; border: none; padding: 12px 25px; margin: 8px; border-radius: 25px; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(92, 64, 51, 0.3);">
+                            All Items
+                        </button>
+                        {% for category in categories %}
+                        <button class="category-filter-btn" data-category="{{ category.id }}" style="background: white; color: #5c4033; border: 2px solid #5c4033; padding: 12px 25px; margin: 8px; border-radius: 25px; font-weight: 600; transition: all 0.3s ease;">
+                            {{ category.Name|default:"Unknown Category" }}
+                        </button>
+                        {% endfor %}
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row justify-content-center">
+            <div class="col-lg-12">
+                <!-- All Menu Items Container -->
+                <div class="all-menu-items">
+                    <div class="row justify-content-center" id="menuItemsContainer">
+                        {% for category in categories %}
+                            {% for item in category.items.all %}
+                            <div class="col-lg-3 col-md-6 col-12 mb-4 menu-item" data-category="{{ category.id }}" style="transition: all 0.5s ease;">
+                                <div class="single-menu card h-100 shadow-sm" style="border-color: #d3c4b0; transform: scale(1); transition: all 0.3s ease; margin: 0 auto; max-width: 300px; border-radius: 15px; overflow: hidden;">
+                                    <div class="card-body p-0">
+                                        {% if item.image %}
+                                        <img src="{{ item.image.url }}" alt="Image of {{ item.name|default:'Item' }}" class="card-img-top img-fluid" loading="lazy" style="height: 220px; object-fit: cover; transition: transform 0.3s ease; width: 100%; border-radius: 15px 15px 15px 15px;">
+                                        {% else %}
+                                        <img src="{% static 'img/placeholder.png' %}" alt="No image available" class="card-img-top img-fluid" loading="lazy" style="height: 220px; object-fit: cover; opacity: 0.5; transition: transform 0.3s ease; width: 100%; border-radius: 15px 15px 15px 15px;">
                                         {% endif %}
-                                    </div>
-                                    {% endif %}
-                                    <div class="title-div justify-content-between d-flex mb-3">
-                                        <h4 class="card-title">{{ item.name }}</h4>
-                                        <p class="price text-primary font-weight-bold">${{ item.price }}</p>
-                                    </div>
-                                    <p class="card-text">{{ item.description }}</p>
-                                    <div class="mt-3 text-center">
-                                        <button type="button" class="primary-btn text-uppercase order-btn" style="background-color: #5c4033; border-color: #5c4033;" data-toggle="modal" data-target="#orderModal" data-product-id="{{ item.pk }}">Order</button>
+                                        <div class="p-3">
+                                            <div class="title-div justify-content-between d-flex mb-2">
+                                                <h5 class="card-title mb-0" style="font-size: 1rem; font-weight: 600; color: #5c4033; line-height: 1.3;">{{ item.name|default:"Unknown Item" }}</h5>
+                                                <p class="price text-primary font-weight-bold mb-0" style="color: #28a745; font-size: 1.1rem;">${{ item.price|default:0 }}</p>
+                                            </div>
+                                            <p class="card-text" style="font-size: 0.85rem; color: #6c757d; margin-bottom: 10px; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;">{{ item.description|default:"No description available."|truncatechars:80 }}</p>
+                                            <div class="category-badge mb-2">
+                                                <span class="badge badge-secondary" style="background: #5c4033; font-size: 0.7rem; padding: 4px 8px; border-radius: 12px;">{{ category.Name|default:"Unknown Category" }}</span>
+                                            </div>
+                                            <div class="text-center">
+                                                <button type="button" class="primary-btn text-uppercase order-btn" style="background-color: #5c4033; border-color: #5c4033; transition: all 0.3s ease; border-radius: 20px; padding: 8px 20px; font-size: 0.85rem; font-weight: 600;" data-toggle="modal" data-target="#orderModal" data-product-id="{{ item.pk }}">Order Now</button>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                            {% endfor %}
                         {% empty %}
                         <div class="col-12 text-center">
                             <p class="text-muted">No items available in this category.</p>
                         </div>
                         {% endfor %}
+                        
+                        <!-- Quantity-based items: Biscuits -->
+                        {% for item in biscuits %}
+                        <div class="col-lg-3 col-md-6 col-12 mb-4 menu-item" data-category="biscuits" style="transition: all 0.5s ease;">
+                            <div class="single-menu card h-100 shadow-sm" style="border-color: #d3c4b0; transform: scale(1); transition: all 0.3s ease; margin: 0 auto; max-width: 300px; border-radius: 15px; overflow: hidden;">
+                                <div class="card-body p-0">
+                                    {% if item.image %}
+                                    <img src="{{ item.image.url }}" alt="Image of {{ item.name|default:'Item' }}" class="card-img-top img-fluid" loading="lazy" style="height: 220px; object-fit: cover; transition: transform 0.3s ease; width: 100%; border-radius: 15px 15px 15px 15px;">
+                                    {% else %}
+                                    <img src="{% static 'img/placeholder.png' %}" alt="No image available" class="card-img-top img-fluid" loading="lazy" style="height: 220px; object-fit: cover; opacity: 0.5; transition: transform 0.3s ease; width: 100%; border-radius: 15px 15px 15px 15px;">
+                                    {% endif %}
+                                    <div class="p-3">
+                                        <div class="title-div justify-content-between d-flex mb-2">
+                                            <h5 class="card-title mb-0" style="font-size: 1rem; font-weight: 600; color: #5c4033; line-height: 1.3;">{{ item.name|default:"Unknown Item" }}</h5>
+                                            <p class="price text-primary font-weight-bold mb-0" style="color: #28a745; font-size: 1.1rem;">${{ item.base_price|default:0 }}/unit</p>
+                                        </div>
+                                        <p class="card-text" style="font-size: 0.85rem; color: #6c757d; margin-bottom: 10px; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;">{{ item.description|default:"No description available."|truncatechars:80 }}</p>
+                                        <div class="category-badge mb-2">
+                                            <span class="badge badge-secondary" style="background: #5c4033; font-size: 0.7rem; padding: 4px 8px; border-radius: 12px;">Biscuits</span>
+                                        </div>
+                                        <div class="text-center">
+                                            <button type="button" class="primary-btn text-uppercase order-btn" style="background-color: #5c4033; border-color: #5c4033; transition: all 0.3s ease; border-radius: 20px; padding: 8px 20px; font-size: 0.85rem; font-weight: 600;" data-toggle="modal" data-target="#quantityOrderModal" data-item-id="{{ item.pk }}" data-item-name="{{ item.name }}" data-base-price="{{ item.base_price }}" data-category="biscuits">Order Now</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        
+                        <!-- Quantity-based items: Cakes -->
+                        {% for item in cakes %}
+                        <div class="col-lg-3 col-md-6 col-12 mb-4 menu-item" data-category="cakes" style="transition: all 0.5s ease;">
+                            <div class="single-menu card h-100 shadow-sm" style="border-color: #d3c4b0; transform: scale(1); transition: all 0.3s ease; margin: 0 auto; max-width: 300px; border-radius: 15px; overflow: hidden;">
+                                <div class="card-body p-0">
+                                    {% if item.image %}
+                                    <img src="{{ item.image.url }}" alt="Image of {{ item.name|default:'Item' }}" class="card-img-top img-fluid" loading="lazy" style="height: 220px; object-fit: cover; transition: transform 0.3s ease; width: 100%; border-radius: 15px 15px 15px 15px;">
+                                    {% else %}
+                                    <img src="{% static 'img/placeholder.png' %}" alt="No image available" class="card-img-top img-fluid" loading="lazy" style="height: 220px; object-fit: cover; opacity: 0.5; transition: transform 0.3s ease; width: 100%; border-radius: 15px 15px 15px 15px;">
+                                    {% endif %}
+                                    <div class="p-3">
+                                        <div class="title-div justify-content-between d-flex mb-2">
+                                            <h5 class="card-title mb-0" style="font-size: 1rem; font-weight: 600; color: #5c4033; line-height: 1.3;">{{ item.name|default:"Unknown Item" }}</h5>
+                                            <p class="price text-primary font-weight-bold mb-0" style="color: #28a745; font-size: 1.1rem;">${{ item.base_price|default:0 }}/unit</p>
+                                        </div>
+                                        <p class="card-text" style="font-size: 0.85rem; color: #6c757d; margin-bottom: 10px; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;">{{ item.description|default:"No description available."|truncatechars:80 }}</p>
+                                        <div class="category-badge mb-2">
+                                            <span class="badge badge-secondary" style="background: #5c4033; font-size: 0.7rem; padding: 4px 8px; border-radius: 12px;">Cakes</span>
+                                        </div>
+                                        <div class="text-center">
+                                            <button type="button" class="primary-btn text-uppercase order-btn" style="background-color: #5c4033; border-color: #5c4033; transition: all 0.3s ease; border-radius: 20px; padding: 8px 20px; font-size: 0.85rem; font-weight: 600;" data-toggle="modal" data-target="#quantityOrderModal" data-item-id="{{ item.pk }}" data-item-name="{{ item.name }}" data-base-price="{{ item.base_price }}" data-category="cakes">Order Now</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    
+                    <!-- No items message (initially hidden) -->
+                    <div class="no-items-message text-center" style="display: none;">
+                        <i class="fa fa-coffee" style="font-size: 3rem; color: #d3c4b0; margin-bottom: 20px;"></i>
+                        <h5 style="color: #6c757d;">No items found in this category</h5>
+                        <p style="color: #6c757d;">Try selecting a different category.</p>
                     </div>
                 </div>
-                {% empty %}
+                
+                {% if not categories %}
                 <div class="col-12 text-center">
                     <p class="text-muted">No categories available.</p>
                 </div>
-                {% endfor %}
+                {% endif %}
             </div>
         </div>
     </div>
 </section>
 <!-- End menu Area -->
+
 
 <!-- Include Order Modal -->
 {% include 'Details.html' %}
@@ -319,7 +634,7 @@
                 <div class="col-lg-5 col-md-6 col-sm-6">
                     <div class="single-footer-widget">
                         <h6>About Us</h6>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore dolore magna aliqua.</p>
+                        <p>Brewed with passion and warmth, our café brings joy, comfort, flavor, and aroma every single day.</p>
                         <p class="footer-text">
                             Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved </a>
                         </p>								
@@ -362,7 +677,7 @@
     <script src="{% static 'js/vendor/jquery-2.2.4.min.js' %}"></script>
     <script src="{% static 'js/vendor/bootstrap.min.js' %}"></script>
     
-    <!-- Load all required jQuery plugins -->
+    <!-- Load all required jQuery plugins - Optimized loading -->
     <script src="{% static 'js/easing.min.js' %}"></script>
     <script src="{% static 'js/hoverIntent.js' %}"></script>
     <script src="{% static 'js/superfish.min.js' %}"></script>
@@ -379,29 +694,54 @@
     <!-- Main JS -->
     <script src="{% static 'js/main.js' %}"></script>
     
-    <!-- Cart Functionality -->
+    <!-- Cart Functionality - Optimized for performance -->
     <script>
         // Global variables
         let cart = [];
         let currentProduct = null;
+        let isInitialized = false;
+
+        // Debounce function for performance
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
 
         // Initialize cart from localStorage
         function initializeCart() {
-            const savedCart = localStorage.getItem('coffeeCart');
-            if (savedCart) {
-                cart = JSON.parse(savedCart);
-                updateCartCount();
+            try {
+                const savedCart = localStorage.getItem('coffeeCart');
+                if (savedCart) {
+                    cart = JSON.parse(savedCart);
+                    updateCartCount();
+                }
+            } catch (error) {
+                console.error('Error loading cart from localStorage:', error);
+                cart = [];
             }
         }
 
         // Save cart to localStorage
         function saveCart() {
-            localStorage.setItem('coffeeCart', JSON.stringify(cart));
+            try {
+                localStorage.setItem('coffeeCart', JSON.stringify(cart));
+            } catch (error) {
+                console.error('Error saving cart to localStorage:', error);
+            }
         }
 
         // Update cart count display
         function updateCartCount() {
             const cartCount = document.getElementById('cartCount');
+            if (!cartCount) return;
+            
             const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
             
             if (totalItems > 0) {
@@ -418,8 +758,6 @@
 
         // Add item to cart
         function addToCart(product, customization) {
-            console.log('Adding to cart:', product, customization);
-            
             if (!product || !customization) {
                 console.error('Invalid product or customization data');
                 return;
@@ -434,7 +772,6 @@
 
             if (existingItem) {
                 existingItem.quantity += 1;
-                console.log('Updated existing item quantity:', existingItem.quantity);
             } else {
                 const newItem = {
                     id: product.id,
@@ -447,14 +784,11 @@
                     extra_demands: customization.extra_demands
                 };
                 cart.push(newItem);
-                console.log('Added new item to cart:', newItem);
             }
 
             saveCart();
             updateCartCount();
             showCartNotification();
-            
-            console.log('Current cart:', cart);
         }
 
         // Remove item from cart
@@ -539,7 +873,7 @@
                     itemsHtml += `
                         <div class="cart-item-row" style="display: flex; align-items: center; padding: 15px; border: 1px solid #e9ecef; border-radius: 10px; margin-bottom: 10px; background: white; transition: all 0.3s ease;">
                             <div style="flex: 0 0 60px; margin-right: 15px;">
-                                <img src="${item.image || 'https://via.placeholder.com/60x60/5c4033/ffffff?text=No+Img'}" alt="${item.name}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px;">
+                                <img src="${item.image || 'https://via.placeholder.com/60x60/5c4033/ffffff?text=No+Img'}" alt="${item.name}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px;" loading="lazy">
                             </div>
                             <div style="flex: 1;">
                                 <h6 style="color: #5c4033; font-weight: 600; margin: 0 0 5px 0;">${item.name}</h6>
@@ -569,9 +903,41 @@
             }
         }
 
+        // Optimized category filter functionality
+        const categoryFilter = debounce(function(selectedCategory) {
+            const $menuItems = $('.menu-item');
+            const $noItemsMessage = $('.no-items-message');
+            
+            $menuItems.addClass('hidden');
+            
+            setTimeout(() => {
+                if (selectedCategory === 'all') {
+                    $menuItems.removeClass('hidden').addClass('show');
+                    $noItemsMessage.hide();
+                } else {
+                    const $categoryItems = $menuItems.filter(`[data-category="${selectedCategory}"]`);
+                    
+                    $menuItems.removeClass('show').addClass('hidden');
+                    $categoryItems.removeClass('hidden').addClass('show');
+                    
+                    if ($categoryItems.length === 0) {
+                        $noItemsMessage.show();
+                    } else {
+                        $noItemsMessage.hide();
+                    }
+                }
+                
+                // Smooth scroll to menu items
+                $('html, body').animate({
+                    scrollTop: $('#menuItemsContainer').offset().top - 100
+                }, 500);
+            }, 300);
+        }, 150);
+
         // Initialize when document is ready
         $(document).ready(function() {
-            console.log('Document ready, setting up cart functionality');
+            if (isInitialized) return;
+            isInitialized = true;
             
             // Initialize cart
             initializeCart();
@@ -584,274 +950,443 @@
                 $('#cartModal').modal('show');
             });
 
-            // Order button click handler
-            $('.order-btn').on('click', function(e) {
+            // Order button click handler - Optimized with event delegation and performance improvements
+            $(document).on('click', '.order-btn', function(e) {
                 e.preventDefault();
-                var productId = $(this).data('product-id');
-                console.log('Order button clicked, product ID:', productId);
+                var $button = $(this);
+                var productId = $button.data('product-id');
+                
+                // Show loading state immediately
+                $button.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Loading...');
 
-                // Show loading state
-                $(this).prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Loading...');
+                // Show modal immediately with existing content
+                $('#orderModal').modal('show');
+                
+                // Update modal with basic info from button data
+                var productName = $button.closest('.single-menu').find('.card-title').text() || 'Product';
+                var productPrice = $button.closest('.single-menu').find('.price').text() || '$0.00';
+                var productDesc = $button.closest('.single-menu').find('.card-text').text() || 'Loading description...';
+                
+                $('#orderModalLabel').text(productName);
+                $('.product-price, .product-price-display').text(productPrice);
+                $('.product-description').text(productDesc);
 
                 $.ajax({
                     url: '{% url "get_product_detail" 0 %}'.replace('0', productId),
                     method: 'GET',
                     dataType: 'json',
-                    timeout: 15000, // Increased timeout for deployment server
-                    beforeSend: function() {
-                        console.log('Sending AJAX request for product ID:', productId);
-                    },
+                    timeout: 10000,
+                    cache: true,
                     success: function(data) {
-                        console.log('AJAX success, response:', data);
                         currentProduct = data;
                         
-                        // Update modal content
+                        // Update modal content with fresh data
                         $('#orderModalLabel').text(data.name || 'Unknown Product');
                         var priceText = '$' + (parseFloat(data.price) || 0).toFixed(2);
-                        $('.product-price').text(priceText);
-                        $('.product-price-display').text(priceText);
+                        $('.product-price, .product-price-display').text(priceText);
                         $('.product-description').text(data.description || 'No description available.');
 
-                        // Handle images
+                        // Handle images with optimized DOM manipulation
                         var carousel = $('#modalProductCarousel');
                         var carouselInner = carousel.find('.carousel-inner');
                         var carouselControls = carousel.find('.carousel-controls');
                         
                         carouselInner.empty();
                         
+                        var imageHtml = '';
                         if (data.images && data.images.length > 0) {
-                            // Multiple images - create carousel
                             data.images.forEach(function(image, index) {
-                                var carouselItem = $('<div class="carousel-item' + (index === 0 ? ' active' : '') + '">' +
-                                    '<img src="' + image + '" alt="' + (data.name || 'Product Image') + '" class="img-fluid product-image" style="width: 100%; height: 280px; object-fit: cover; border-radius: 12px; transition: all 0.4s ease; transform: scale(1);">' +
-                                    '</div>');
-                                carouselInner.append(carouselItem);
+                                imageHtml += '<div class="carousel-item' + (index === 0 ? ' active' : '') + '">' +
+                                    '<img src="' + image + '" alt="' + (data.name || 'Product Image') + '" class="img-fluid product-image" style="width: 100%; height: 280px; object-fit: cover; border-radius: 12px; transition: all 0.4s ease; transform: scale(1);" loading="lazy">' +
+                                    '</div>';
                             });
-                            
-                            if (data.images.length > 1) {
-                                carouselControls.show();
-                            } else {
-                                carouselControls.hide();
-                            }
+                            carouselControls.toggle(data.images.length > 1);
                         } else if (data.image_url && data.image_url.trim() !== '') {
-                            // Single image
-                            var carouselItem = $('<div class="carousel-item active">' +
-                                '<img src="' + data.image_url + '" alt="' + (data.name || 'Product Image') + '" class="img-fluid product-image" style="width: 100%; height: 280px; object-fit: cover; border-radius: 12px; transition: all 0.4s ease; transform: scale(1);">' +
-                                '</div>');
-                            carouselInner.append(carouselItem);
+                            imageHtml = '<div class="carousel-item active">' +
+                                '<img src="' + data.image_url + '" alt="' + (data.name || 'Product Image') + '" class="img-fluid product-image" style="width: 100%; height: 280px; object-fit: cover; border-radius: 12px; transition: all 0.4s ease; transform: scale(1);" loading="lazy">' +
+                                '</div>';
                             carouselControls.hide();
                         } else {
-                            // No image - placeholder
-                            var carouselItem = $('<div class="carousel-item active">' +
+                            imageHtml = '<div class="carousel-item active">' +
                                 '<img src="https://via.placeholder.com/300x200/5c4033/ffffff?text=No+Image" alt="Placeholder Image" class="img-fluid product-image" style="width: 100%; height: 280px; object-fit: cover; border-radius: 12px; transition: all 0.4s ease; transform: scale(1);">' +
-                                '</div>');
-                            carouselInner.append(carouselItem);
+                                '</div>';
                             carouselControls.hide();
+                        }
+                        
+                        carouselInner.html(imageHtml);
+
+                        // Handle category-specific form fields
+                        var category = (data.category || '').toLowerCase();
+                        var isCakeOrBiscuit = category.includes('cake') || category.includes('biscuit');
+                        
+                        if (isCakeOrBiscuit) {
+                            // Hide sugar level and spoon preference for cakes and biscuits
+                            $('.form-group:has(#sugar)').hide();
+                            $('.form-group:has(#spoon)').hide();
+                        } else {
+                            // Show sugar level and spoon preference for other items
+                            $('.form-group:has(#sugar)').show();
+                            $('.form-group:has(#spoon)').show();
                         }
 
                         // Reset form
                         $('#orderForm').trigger('reset');
                         $('#successMessage').addClass('d-none');
-
-                        // Show modal
-                        $('#orderModal').modal('show');
                         
                         // Re-enable button
-                        $('.order-btn').prop('disabled', false).html('Order');
+                        $button.prop('disabled', false).html('Order Now');
                     },
                     error: function(xhr, status, error) {
-                        console.error('AJAX error:', status, error);
-                        console.error('Response text:', xhr.responseText);
-                        console.error('Status code:', xhr.status);
+                        // Hide modal on error
+                        $('#orderModal').modal('hide');
                         
                         if (status === 'timeout') {
-                            alert('Request timed out. The server is taking too long to respond. Please try again.');
+                            alert('Request timed out. Please try again.');
                         } else if (xhr.status === 404) {
                             alert('Product not found. Please refresh the page and try again.');
                         } else {
                             alert('Error loading product details. Please try again.');
                         }
-                        $('.order-btn').prop('disabled', false).html('Order');
+                        
+                        // Re-enable button
+                        $button.prop('disabled', false).html('Order Now');
                     }
                 });
             });
 
-                         // Form submission
-             $('#orderForm').on('submit', function(e) {
-                 e.preventDefault();
-                 
-                 if (!currentProduct) {
-                     alert('No product selected!');
-                     return;
-                 }
+            // Form submission
+            $('#orderForm').on('submit', function(e) {
+                e.preventDefault();
+                
+                if (!currentProduct) {
+                    alert('No product selected!');
+                    return;
+                }
 
-                 const formData = {
-                     sugar: $('#sugar').val(),
-                     spoon: $('#spoon').val(),
-                     extra_demands: $('#extra_demands').val()
-                 };
+                const formData = {
+                    sugar: $('#sugar').val(),
+                    spoon: $('#spoon').val(),
+                    extra_demands: $('#extra_demands').val()
+                };
 
-                 if (!formData.sugar || !formData.spoon) {
-                     alert('Please select sugar level and spoon preference.');
-                     return;
-                 }
+                // Check if this is a cake or biscuit category
+                var category = (currentProduct.category || '').toLowerCase();
+                var isCakeOrBiscuit = category.includes('cake') || category.includes('biscuit');
 
-                 // Show loading state
-                 var $btn = $(this).find('.order-submit-btn');
-                 var $spinner = $('#loadingSpinner');
-                 var $submitText = $('#submitText');
-                 
-                 $btn.prop('disabled', true);
-                 $spinner.removeClass('d-none');
-                 $submitText.text('Adding to Cart...');
-                 
-                 // Add to cart
-                 setTimeout(function() {
-                     addToCart(currentProduct, formData);
-                     
-                     $spinner.addClass('d-none');
-                     $submitText.text('Added to Cart!');
-                     $('#successMessage').removeClass('d-none');
-                     
-                     // Reset after 1.5 seconds
-                     setTimeout(function() {
-                         $btn.prop('disabled', false);
-                         $submitText.text('Add to Order');
-                         $('#successMessage').addClass('d-none');
-                         $('#orderModal').modal('hide');
-                         currentProduct = null;
-                     }, 1500);
-                 }, 1000);
-             });
+                // Only validate sugar and spoon for non-cake/biscuit items
+                if (!isCakeOrBiscuit && (!formData.sugar || !formData.spoon)) {
+                    alert('Please select sugar level and spoon preference.');
+                    return;
+                }
 
-             // Checkout button handler
-             $('#checkoutBtn').on('click', function() {
-                 if (cart.length === 0) {
-                     alert('Your cart is empty. Please add items before proceeding to checkout.');
-                     return;
-                 }
-                 updateCartDisplay(); // Ensure cart is up-to-date
-                 $('#cartModal').modal('hide'); // Hide cart modal
-                 $('#checkoutModal').modal('show'); // Show checkout modal
-                 updateCheckoutSummary(); // Update checkout summary
-             });
+                // Show loading state
+                var $btn = $(this).find('.order-submit-btn');
+                var $spinner = $('#loadingSpinner');
+                var $submitText = $('#submitText');
+                
+                $btn.prop('disabled', true);
+                $spinner.removeClass('d-none');
+                $submitText.text('Adding to Cart...');
+                
+                // Add to cart
+                setTimeout(function() {
+                    addToCart(currentProduct, formData);
+                    
+                    $spinner.addClass('d-none');
+                    $submitText.text('Added to Cart!');
+                    $('#successMessage').removeClass('d-none');
+                    
+                    // Reset after 1.5 seconds
+                    setTimeout(function() {
+                        $btn.prop('disabled', false);
+                        $submitText.text('Add to Order');
+                        $('#successMessage').addClass('d-none');
+                        $('#orderModal').modal('hide');
+                        currentProduct = null;
+                    }, 1500);
+                }, 1000);
+            });
 
-             // Update checkout summary
-             function updateCheckoutSummary() {
-                 const checkoutItems = document.getElementById('checkoutItems');
-                 const checkoutTotal = document.getElementById('checkoutTotal');
-                 
-                 if (!checkoutItems || !checkoutTotal) {
-                     console.error('Checkout elements not found');
-                     return;
-                 }
-                 
-                 let total = 0;
-                 let itemsHtml = '';
+            // Checkout button handler
+            $('#checkoutBtn').on('click', function() {
+                if (cart.length === 0) {
+                    alert('Your cart is empty. Please add items before proceeding to checkout.');
+                    return;
+                }
+                updateCartDisplay();
+                $('#cartModal').modal('hide');
+                $('#checkoutModal').modal('show');
+                updateCheckoutSummary();
+            });
 
-                 cart.forEach(item => {
-                     const itemTotal = parseFloat(item.price) * item.quantity;
-                     total += itemTotal;
-                     itemsHtml += `
-                         <div class="d-flex justify-content-between align-items-center mb-2">
-                             <span>${item.name} (${item.quantity})</span>
-                             <span>$${itemTotal.toFixed(2)}</span>
-                         </div>
-                     `;
-                 });
-                 checkoutItems.innerHTML = itemsHtml;
-                 checkoutTotal.textContent = '$' + total.toFixed(2);
-             }
+            // Update checkout summary
+            function updateCheckoutSummary() {
+                const checkoutItems = document.getElementById('checkoutItems');
+                const checkoutTotal = document.getElementById('checkoutTotal');
+                
+                if (!checkoutItems || !checkoutTotal) return;
+                
+                let total = 0;
+                let itemsHtml = '';
 
-             // Checkout form submission
-             $('#checkoutForm').on('submit', function(e) {
-                 e.preventDefault();
-                 
-                 if (cart.length === 0) {
-                     alert('Your cart is empty. Please add items before placing an order.');
-                     return;
-                 }
-                 
-                 var $btn = $('#placeOrderBtn');
-                 var $spinner = $('#orderSpinner');
-                 var $text = $('#placeOrderText');
+                cart.forEach(item => {
+                    const itemTotal = parseFloat(item.price) * item.quantity;
+                    total += itemTotal;
+                    itemsHtml += `
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span>${item.name} (${item.quantity})</span>
+                            <span>$${itemTotal.toFixed(2)}</span>
+                        </div>
+                    `;
+                });
+                checkoutItems.innerHTML = itemsHtml;
+                checkoutTotal.textContent = '$' + total.toFixed(2);
+            }
 
-                 // Set loading state
-                 $btn.prop('disabled', true);
-                 $spinner.removeClass('d-none');
-                 $text.text('Placing Order...');
+            // Checkout form submission
+            $('#checkoutForm').on('submit', function(e) {
+                e.preventDefault();
+                
+                if (cart.length === 0) {
+                    alert('Your cart is empty. Please add items before placing an order.');
+                    return;
+                }
+                
+                var $btn = $('#placeOrderBtn');
+                var $spinner = $('#orderSpinner');
+                var $text = $('#placeOrderText');
 
-                 // Prepare order data
-                 var orderData = {
-                     customer_name: $('#customerName').val(),
-                     customer_email: $('#customerEmail').val(),
-                     customer_phone: $('#customerPhone').val(),
-                     customer_address: $('#customerAddress').val(),
-                     special_instructions: $('#specialInstructions').val(),
-                     cart_items: cart.map(item => ({
-                         name: item.name,
-                         price: parseFloat(item.price),
-                         quantity: item.quantity,
-                         sugar: item.sugar,
-                         spoon: item.spoon,
-                         extra_demands: item.extra_demands || ''
-                     }))
-                 };
+                $btn.prop('disabled', true);
+                $spinner.removeClass('d-none');
+                $text.text('Placing Order...');
 
-                 $.ajax({
-                     url: '{% url "process_checkout" %}',
-                     method: 'POST',
-                     contentType: 'application/json',
-                     data: JSON.stringify(orderData),
-                     dataType: 'json',
-                     timeout: 45000, // Increased timeout for deployment server
-                     success: function(response) {
-                         console.log('Order placed successfully:', response);
-                         
-                         if (response.success) {
-                             // Show success notification
-                             alert('Order placed successfully! Order #' + response.order_id);
-                             
-                             // Clear cart and close modals
-                             cart = [];
-                             saveCart();
-                             updateCartCount();
-                             updateCartDisplay();
-                             
-                             // Reset checkout form
-                             $('#checkoutForm')[0].reset();
-                             
-                             // Close modals
-                             $('#checkoutModal').modal('hide');
-                             $('#cartModal').modal('hide');
-                         } else {
-                             alert('Error: ' + response.error);
-                         }
-                     },
-                     error: function(xhr, status, error) {
-                         console.error('Error placing order:', status, error);
-                         console.error('Response text:', xhr.responseText);
-                         console.error('Status code:', xhr.status);
-                         
-                         if (status === 'timeout') {
-                             alert('Order request timed out. The server is taking too long to process your order. Please try again.');
-                         } else if (xhr.status === 400) {
-                             alert('Invalid order data. Please check your information and try again.');
-                         } else if (xhr.status === 500) {
-                             alert('Server error occurred. Please try again later.');
-                         } else {
-                             alert('Error placing order. Please try again.');
-                         }
-                     },
-                     complete: function() {
-                         // Reset button state
-                         $btn.prop('disabled', false);
-                         $spinner.addClass('d-none');
-                         $text.text('Place Order');
-                     }
-                 });
-             });
-         });
+                var orderData = {
+                    customer_name: $('#customerName').val(),
+                    customer_email: $('#customerEmail').val(),
+                    customer_phone: $('#customerPhone').val(),
+                    customer_address: $('#customerAddress').val(),
+                    special_instructions: $('#specialInstructions').val(),
+                    cart_items: cart.map(item => ({
+                        name: item.name,
+                        price: parseFloat(item.price),
+                        quantity: item.quantity,
+                        sugar: item.sugar,
+                        spoon: item.spoon,
+                        extra_demands: item.extra_demands || ''
+                    }))
+                };
+
+                $.ajax({
+                    url: '{% url "process_checkout" %}',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(orderData),
+                    dataType: 'json',
+                    timeout: 45000,
+                    success: function(response) {
+                        if (response.success) {
+                            alert('Order placed successfully! Order #' + response.order_id);
+                            
+                            cart = [];
+                            saveCart();
+                            updateCartCount();
+                            updateCartDisplay();
+                            
+                            $('#checkoutForm')[0].reset();
+                            $('#checkoutModal').modal('hide');
+                            $('#cartModal').modal('hide');
+                        } else {
+                            alert('Error: ' + response.error);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        if (status === 'timeout') {
+                            alert('Order request timed out. Please try again.');
+                        } else if (xhr.status === 400) {
+                            alert('Invalid order data. Please check your information and try again.');
+                        } else if (xhr.status === 500) {
+                            alert('Server error occurred. Please try again later.');
+                        } else {
+                            alert('Error placing order. Please try again.');
+                        }
+                    },
+                    complete: function() {
+                        $btn.prop('disabled', false);
+                        $spinner.addClass('d-none');
+                        $text.text('Place Order');
+                    }
+                });
+            });
+
+            // Category Filter Functionality - Optimized
+            $(document).on('click', '.category-filter-btn', function() {
+                const selectedCategory = $(this).data('category');
+                
+                // Update active button
+                $('.category-filter-btn').removeClass('active');
+                $(this).addClass('active');
+                
+                // Use debounced filter function
+                categoryFilter(selectedCategory);
+            });
+            
+            // Initialize - show all items by default
+            $('.menu-item').addClass('show');
+            
+            // Lazy load images for better performance
+            if ('IntersectionObserver' in window) {
+                const imageObserver = new IntersectionObserver((entries, observer) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const img = entry.target;
+                            img.src = img.dataset.src;
+                            img.classList.remove('lazy');
+                            imageObserver.unobserve(img);
+                        }
+                    });
+                });
+                
+                document.querySelectorAll('img[data-src]').forEach(img => {
+                    imageObserver.observe(img);
+                });
+            }
+        });
+    </script>
+    
+    <!-- Quantity Order Modal -->
+    <div class="modal fade" id="quantityOrderModal" tabindex="-1" role="dialog" aria-labelledby="quantityOrderModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content" style="border-radius: 15px; box-shadow: 0 20px 60px rgba(0,0,0,0.15); border: none;">
+                <div class="modal-header" style="background: linear-gradient(135deg, #f8f1e9 0%, #e8d5c4 100%); border-bottom: 2px solid #d3c4b0; border-radius: 15px 15px 0 0; padding: 25px 30px;">
+                    <h5 class="modal-title" id="quantityOrderModalLabel" style="color: #5c4033; font-weight: 700; font-size: 1.4rem; margin: 0;">
+                        <i class="fa fa-shopping-cart" style="margin-right: 10px;"></i>Order Details
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="opacity: 0.7; transition: all 0.3s ease;">
+                        <span aria-hidden="true" style="font-size: 1.5rem; color: #5c4033;">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="row">
+                        <div class="col-12">
+                            <h6 id="quantityItemName" style="color: #5c4033; font-weight: 600; margin-bottom: 15px;"></h6>
+                            <p id="quantityItemDescription" style="color: #6c757d; margin-bottom: 20px;"></p>
+                            
+                            <!-- Quantity Selection -->
+                            <div class="form-group">
+                                <label for="quantitySelect" style="color: #5c4033; font-weight: 600;">Quantity:</label>
+                                <select class="form-control" id="quantitySelect" style="border: 2px solid #d3c4b0; border-radius: 10px; padding: 10px;">
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                    <option value="7">7</option>
+                                    <option value="8">8</option>
+                                    <option value="9">9</option>
+                                    <option value="10">10</option>
+                                </select>
+                            </div>
+                            
+                            <!-- Price Display -->
+                            <div class="form-group">
+                                <label style="color: #5c4033; font-weight: 600;">Total Price:</label>
+                                <div class="price-display" style="background: #f8f9fa; padding: 15px; border-radius: 10px; border: 2px solid #d3c4b0;">
+                                    <span id="quantityTotalPrice" style="color: #28a745; font-size: 1.2rem; font-weight: bold;">$0</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Extra Requests -->
+                            <div class="form-group">
+                                <label for="quantityExtraRequests" style="color: #5c4033; font-weight: 600;">Extra Requests (Optional):</label>
+                                <textarea class="form-control" id="quantityExtraRequests" rows="3" placeholder="Any special requests or instructions..." style="border: 2px solid #d3c4b0; border-radius: 10px; padding: 10px;"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer" style="background: #f8f9fa; border-top: 2px solid #d3c4b0; border-radius: 0 0 15px 15px; padding: 20px 30px;">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" style="background: #6c757d; border: none; padding: 10px 20px; border-radius: 25px; font-weight: 600;">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="addQuantityToCart" style="background: linear-gradient(135deg, #5c4033 0%, #8b6f47 100%); border: none; padding: 10px 25px; border-radius: 25px; font-weight: 600; color: white;">
+                        <i class="fa fa-shopping-cart" style="margin-right: 8px;"></i>Add to Cart
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Quantity Order Modal Functionality
+        $(document).ready(function() {
+            let currentQuantityItem = null;
+            
+            // Handle quantity order modal
+            $('#quantityOrderModal').on('show.bs.modal', function (event) {
+                const button = $(event.relatedTarget);
+                const itemId = button.data('item-id');
+                const itemName = button.data('item-name');
+                const basePrice = parseInt(button.data('base-price'));
+                const category = button.data('category');
+                
+                currentQuantityItem = {
+                    id: itemId,
+                    name: itemName,
+                    basePrice: basePrice,
+                    category: category,
+                    quantity: 1
+                };
+                
+                $('#quantityItemName').text(itemName);
+                $('#quantityItemDescription').text('Select quantity and add any special requests.');
+                $('#quantitySelect').val(1);
+                $('#quantityExtraRequests').val('');
+                updateQuantityPrice();
+            });
+            
+            // Update price when quantity changes
+            $('#quantitySelect').on('change', function() {
+                if (currentQuantityItem) {
+                    currentQuantityItem.quantity = parseInt($(this).val());
+                    updateQuantityPrice();
+                }
+            });
+            
+            function updateQuantityPrice() {
+                if (currentQuantityItem) {
+                    const totalPrice = currentQuantityItem.basePrice * currentQuantityItem.quantity;
+                    $('#quantityTotalPrice').text('$' + totalPrice);
+                }
+            }
+            
+            // Add to cart functionality
+            $('#addQuantityToCart').on('click', function() {
+                if (currentQuantityItem) {
+                    const extraRequests = $('#quantityExtraRequests').val();
+                    
+                    const cartItem = {
+                        id: currentQuantityItem.id,
+                        name: currentQuantityItem.name,
+                        price: currentQuantityItem.basePrice * currentQuantityItem.quantity,
+                        quantity: currentQuantityItem.quantity,
+                        category: currentQuantityItem.category,
+                        extra_demands: extraRequests,
+                        sugar: '',
+                        spoon: ''
+                    };
+                    
+                    // Add to cart
+                    cart.push(cartItem);
+                    saveCart();
+                    updateCartCount();
+                    updateCartDisplay();
+                    
+                    // Close modal
+                    $('#quantityOrderModal').modal('hide');
+                    
+                    // Show success message
+                    alert('Item added to cart successfully!');
+                }
+            });
+        });
     </script>
 </body>
 </html>

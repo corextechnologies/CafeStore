@@ -20,6 +20,18 @@ def HomeView(request):
 def AboutView(request):
     return render(request, 'About.html')
 
+def clear_menu_cache():
+    """Clear menu-related cache to refresh categories and items"""
+    cache.delete('menu_categories')
+    cache.delete('menu_data')
+
+def clear_cache_view(request):
+    """Simple view to clear menu cache - useful for debugging"""
+    clear_menu_cache()
+    return JsonResponse({'status': 'Menu cache cleared successfully'})
+
+
+
 def MenuView(request):
     """
     Optimized menu view with caching and database optimization.
@@ -37,15 +49,32 @@ def MenuView(request):
                 'items__additional_images'
             ).all()
             
+            # Debug: Print categories to console
+            print(f"Found {categories.count()} categories:")
+            for category in categories:
+                try:
+                    print(f"  - Category ID: {category.id}, Name: {category.Name}")
+                    print(f"    Items count: {category.items.count()}")
+                    # Debug: Print items in this category
+                    for item in category.items.all():
+                        try:
+                            print(f"      - Item ID: {item.id}, Name: {item.name}, Price: {item.price}")
+                        except Exception as e:
+                            print(f"      - Error accessing item {item.id}: {str(e)}")
+                except Exception as e:
+                    print(f"  - Error accessing category {category.id}: {str(e)}")
+            
             # Cache for 30 minutes (increased for better performance)
             cache.set(cache_key, categories, 1800)
         except Exception as e:
             print(f"Error loading menu categories: {str(e)}")
             # Fallback to empty categories if there's an error
             categories = []
+    else:
+        print(f"Using cached categories: {categories.count()} categories found")
     
     context = {
-        'categories': categories,
+        'categories': categories
     }
     return render(request, 'Menu.html', context)
 
@@ -56,62 +85,72 @@ def get_product_detail(request, pk):
     Optimized for deployment server performance.
     """
     try:
+        # Check cache first
+        cache_key = f'product_detail_{pk}'
+        cached_data = cache.get(cache_key)
+        if cached_data:
+            return JsonResponse(cached_data)
+        
         print(f"Processing get_product_detail request for pk: {pk}")
         
-        # Use select_related to optimize database queries
-        product = get_object_or_404(Items.objects.select_related('Category'), pk=pk)
+        # Use select_related and prefetch_related to optimize database queries
+        product = get_object_or_404(
+            Items.objects.select_related('Category').prefetch_related('additional_images'), 
+            pk=pk
+        )
         print(f"Product found: {product.name}")
         
-        # Get all images for the product with error handling
+        # Get all images for the product with optimized handling
         images = []
+        
+        # Add main image if exists
         if product.image:
             try:
                 images.append(product.image.url)
             except Exception:
-                # If image is corrupted or missing, skip it
                 pass
         
-        # Add additional images with error handling
+        # Add additional images efficiently
         try:
-            for additional_image in product.additional_images.all():
+            additional_images = product.additional_images.all()
+            for additional_image in additional_images:
                 try:
-                    images.append(additional_image.image.url)
+                    if additional_image.image:
+                        images.append(additional_image.image.url)
                 except Exception:
-                    # Skip corrupted additional images
                     continue
         except Exception:
-            # If additional_images relationship fails, continue without them
             pass
         
-        # Handle potential encryption errors for each field
+        # Build response data with error handling
         try:
-            product_name = str(product.name) if product.name else "Unknown Product"
+            data = {
+                'id': product.id,
+                'name': str(product.name) if product.name else "Unknown Product",
+                'description': str(product.description) if product.description else "",
+                'price': int(product.price) if product.price else 0,
+                'image_url': product.image.url if product.image else None,
+                'images': images,
+                'category': str(product.Category.Name) if product.Category and product.Category.Name else "",
+            }
         except Exception as e:
-            print(f"Error accessing product name: {str(e)}")
-            product_name = "Unknown Product"
+            print(f"Error building response data: {str(e)}")
+            data = {
+                'id': product.id,
+                'name': "Unknown Product",
+                'description': "",
+                'price': 0,
+                'image_url': None,
+                'images': [],
+                'category': "",
+            }
         
-        try:
-            product_description = str(product.description) if product.description else ""
-        except Exception as e:
-            print(f"Error accessing product description: {str(e)}")
-            product_description = ""
+        # Cache the result for 5 minutes
+        cache.set(cache_key, data, 300)
         
-        try:
-            product_price = int(product.price) if product.price else 0
-        except Exception as e:
-            print(f"Error accessing product price: {str(e)}")
-            product_price = 0
-        
-        data = {
-            'id': product.id,
-            'name': product_name,
-            'description': product_description,
-            'price': product_price,
-            'image_url': product.image.url if product.image else None,
-            'images': images,
-        }
-        print(f"Returning data for product {product_name}")
+        print(f"Returning data for product {data['name']}")
         return JsonResponse(data)
+        
     except Exception as e:
         print(f"Error in get_product_detail for pk {pk}: {str(e)}")
         return JsonResponse({'error': 'Product not found or error occurred'}, status=400)
@@ -222,7 +261,7 @@ def process_checkout(request):
             # Don't fail the order if email fails
         
         # Clear menu cache to reflect any changes
-        cache.delete('menu_data')
+        clear_menu_cache()
         
         return JsonResponse({
             'success': True,

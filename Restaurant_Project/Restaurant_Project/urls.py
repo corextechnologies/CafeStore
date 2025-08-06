@@ -16,8 +16,8 @@ urlpatterns = [
     path('test-checkout/', test_checkout_url, name='test_checkout'),
     path('test-server/', test_server_performance, name='test_server_performance'),
     path('submit_review/', submit_review, name='submit_review'),
-
-] 
+    path('clear-cache/', clear_cache_view, name='clear_cache'),
+]
 # Serve static and media files in development
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

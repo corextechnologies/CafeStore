@@ -47,7 +47,7 @@ coverage==7.3.2
 # Code Quality & Formatting
 black==23.11.0
 flake8==6.1.0
-isort==5.12.0
+isort==5.12.0   
 
 # Documentation
 Sphinx==7.2.6

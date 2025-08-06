@@ -47,45 +47,80 @@
                                     {% csrf_token %}
                                     
                                     <!-- Sugar Level Section -->
-                                    <div class="form-group mb-4">
-                                        <label for="sugar" class="form-label" style="color: #5c4033; font-weight: 600; font-size: 1.1rem; margin-bottom: 10px; display: flex; align-items: center;">
-                                            <i class="fa fa-coffee" style="margin-right: 8px; color: #8b6f47;"></i>
-                                            Sugar Level
-                                        </label>
-                                        <div class="custom-select-wrapper" style="position: relative;">
-                                            <select class="form-control custom-select" id="sugar" name="sugar" required style="border: 2px solid #e9ecef; border-radius: 10px; padding: 12px 15px; font-size: 1rem; background: white; transition: all 0.3s ease; appearance: none; cursor: pointer;">
-                                            <option value="" disabled selected>Select sugar level</option>
-                                            <option value="0">No Sugar</option>
-                                            <option value="1">1 Spoon</option>
-                                            <option value="2">2 Spoons</option>
-                                            <option value="3">3 Spoons</option>
-                                        </select>
-                                            <div class="select-arrow" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: #5c4033; pointer-events: none; transition: transform 0.3s ease;">
-                                                <i class="fa fa-chevron-down"></i>
-                                            </div>
-                                        </div>
-                                        <div class="invalid-feedback" style="color: #dc3545; font-size: 0.9rem; margin-top: 5px;">Please select a sugar level.</div>
-                                    </div>
+<!-- Sugar Level Section -->
+<div class="form-group mb-4">
+    <label for="sugar" class="form-label" style="color: #5c4033; font-weight: 600; font-size: 1.1rem; margin-bottom: 10px;">
+        <i class="fa fa-coffee" style="margin-right: 8px; color: #8b6f47;"></i> Sugar Level
+    </label>
+    <div class="position-relative">
+        <select id="sugar" name="sugar" required class="form-control" style="
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-color: #fff;
+            border: 2px solid #5c4033;
+            border-radius: 12px;
+            padding: 12px 44px 12px 16px;
+            font-size: 1rem;
+            color: #5c4033;
+            width: 100%;
+            height: auto;
+        ">
+            <option value="" disabled selected>Select sugar level</option>
+            <option value="0">No Sugar</option>
+            <option value="1">1 Spoon</option>
+            <option value="2">2 Spoons</option>
+            <option value="3">3 Spoons</option>
+        </select>
+        <i class="fa fa-chevron-down" style="
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #5c4033;
+            font-size: 1rem;
+            pointer-events: none;
+        "></i>
+    </div>
+</div>
 
-                                    <!-- Spoon Preference Section -->
-                                    <div class="form-group mb-4">
-                                        <label for="spoon" class="form-label" style="color: #5c4033; font-weight: 600; font-size: 1.1rem; margin-bottom: 10px; display: flex; align-items: center;">
-                                            <i class="fa fa-cutlery" style="margin-right: 8px; color: #8b6f47;"></i>
-                                            Spoon Preference
-                                        </label>
-                                        <div class="custom-select-wrapper" style="position: relative;">
-                                            <select class="form-control custom-select" id="spoon" name="spoon" required style="border: 2px solid #e9ecef; border-radius: 10px; padding: 12px 15px; font-size: 1rem; background: white; transition: all 0.3s ease; appearance: none; cursor: pointer;">
-                                            <option value="" disabled selected>Select spoon preference</option>
-                                            <option value="plastic">Plastic Spoon</option>
-                                            <option value="metal">Metal Spoon</option>
-                                            <option value="none">No Spoon</option>
-                                        </select>
-                                            <div class="select-arrow" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: #5c4033; pointer-events: none; transition: transform 0.3s ease;">
-                                                <i class="fa fa-chevron-down"></i>
-                                            </div>
-                                        </div>
-                                        <div class="invalid-feedback" style="color: #dc3545; font-size: 0.9rem; margin-top: 5px;">Please select a spoon preference.</div>
-                                    </div>
+
+
+<!-- Spoon Preference Section -->
+<div class="form-group mb-4">
+    <label for="spoon" class="form-label" style="color: #5c4033; font-weight: 600; font-size: 1.1rem; margin-bottom: 10px;">
+        <i class="fa fa-cutlery" style="margin-right: 8px; color: #8b6f47;"></i> Spoon Preference
+    </label>
+    <div class="position-relative">
+        <select id="spoon" name="spoon" required class="form-control" style="
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-color: #fff;
+            border: 2px solid #5c4033;
+            border-radius: 12px;
+            padding: 12px 44px 12px 16px;
+            font-size: 1rem;
+            color: #5c4033;
+            width: 100%;
+            height: auto;
+        ">
+            <option value="" disabled selected>Select spoon preference</option>
+            <option value="plastic">Plastic Spoon</option>
+            <option value="none">No Spoon</option>
+        </select>
+        <i class="fa fa-chevron-down" style="
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #5c4033;
+            font-size: 1rem;
+            pointer-events: none;
+        "></i>
+    </div>
+</div>
+
 
                                     <!-- Extra Demands Section -->
                                     <div class="form-group mb-4">
