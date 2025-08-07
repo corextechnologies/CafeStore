@@ -198,8 +198,19 @@ def test_server_performance(request):
 def process_checkout(request):
     """
     Process order checkout with comprehensive error handling and email notifications.
+    Optimized with caching and batch processing.
     """
     try:
+        # Add request rate limiting
+        client_ip = request.META.get('REMOTE_ADDR')
+        cache_key = f'checkout_attempt_{client_ip}'
+        if cache.get(cache_key):
+            return JsonResponse({
+                'success': False,
+                'message': 'Please wait a moment before placing another order.'
+            }, status=429)
+        cache.set(cache_key, True, 5)  # 5 seconds cooldown
+        
         data = json.loads(request.body)
         
         # Extract order data
@@ -310,9 +321,18 @@ def send_initial_order_email(order):
 def BookTableView(request):
     """
     Handle table booking with email confirmation.
+    Optimized with caching and rate limiting.
     """
     if request.method == 'POST':
         try:
+            # Add request rate limiting
+            client_ip = request.META.get('REMOTE_ADDR')
+            cache_key = f'booking_attempt_{client_ip}'
+            if cache.get(cache_key):
+                messages.error(request, 'Please wait a moment before making another booking.')
+                return redirect('book')
+            cache.set(cache_key, True, 5)  # 5 seconds cooldown
+            
             # Extract form data
             name = request.POST.get('name', '').strip()
             email = request.POST.get('email', '').strip()

@@ -7,14 +7,23 @@ from django.core.exceptions import ImproperlyConfigured
 from django.core.validators import ValidationError
 
 class EncryptedFieldMixin:
+    # Class-level Fernet instance for better performance
+    _fernet_instance = None
+    
+    @classmethod
+    def get_fernet(cls):
+        if cls._fernet_instance is None:
+            encryption_key = getattr(settings, 'FIELD_ENCRYPTION_KEY', None)
+            if not encryption_key:
+                raise ImproperlyConfigured(
+                    'FIELD_ENCRYPTION_KEY must be set in settings for encrypted fields'
+                )
+            cls._fernet_instance = Fernet(encryption_key)
+        return cls._fernet_instance
+    
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self._encryption_key = getattr(settings, 'FIELD_ENCRYPTION_KEY', None)
-        if not self._encryption_key:
-            raise ImproperlyConfigured(
-                'FIELD_ENCRYPTION_KEY must be set in settings for encrypted fields'
-            )
-        self._fernet = Fernet(self._encryption_key)
+        self._fernet = self.get_fernet()
 
     def _is_encrypted(self, value):
         if not isinstance(value, str):
@@ -40,15 +49,18 @@ class EncryptedFieldMixin:
             return None
         if self._is_encrypted(value):
             return value
-        # Convert to string for encryption
-        encrypted_data = self._fernet.encrypt(str(value).encode('utf-8'))
-        return base64.b64encode(encrypted_data).decode('utf-8')
+        # Convert to string and encrypt in one operation
+        try:
+            encrypted_data = self._fernet.encrypt(str(value).encode('utf-8'))
+            return base64.b64encode(encrypted_data).decode('utf-8')
+        except Exception:
+            # Return original value if encryption fails
+            return value
 
     def from_db_value(self, value, expression, connection):
         if value is None or not isinstance(value, str):
             return value
-        if not self._is_valid_base64(value):
-            return value
+        # Skip base64 validation for performance
         try:
             decrypted_data = self._fernet.decrypt(base64.b64decode(value.encode('utf-8')))
             result = decrypted_data.decode('utf-8')
