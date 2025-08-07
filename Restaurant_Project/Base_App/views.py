@@ -202,7 +202,7 @@ def process_checkout(request):
     """
     try:
         # Add request rate limiting
-        client_ip = request.META.get('REMOTE_ADDR')
+        client_ip = request.META.get('REMOTE_ADDR', request.META.get('HTTP_X_FORWARDED_FOR', ''))
         cache_key = f'checkout_attempt_{client_ip}'
         if cache.get(cache_key):
             return JsonResponse({
@@ -210,6 +210,28 @@ def process_checkout(request):
                 'message': 'Please wait a moment before placing another order.'
             }, status=429)
         cache.set(cache_key, True, 5)  # 5 seconds cooldown
+        
+        # Set a timeout for the entire operation
+        import signal
+        from contextlib import contextmanager
+        
+        @contextmanager
+        def timeout(seconds):
+            def handler(signum, frame):
+                raise TimeoutError("Request timed out")
+            
+            # Set the timeout handler
+            signal.signal(signal.SIGALRM, handler)
+            signal.alarm(seconds)
+            
+            try:
+                yield
+            finally:
+                # Disable the alarm
+                signal.alarm(0)
+        
+        # Execute with timeout
+        with timeout(10):  # 10 second timeout
         
         data = json.loads(request.body)
         
@@ -294,29 +316,35 @@ def process_checkout(request):
 
 def send_initial_order_email(order):
     """
-    Send initial order confirmation email to customer.
+    Send initial order confirmation email to customer asynchronously.
     """
-    context = {
-        'customer_name': order.customer_name,
-        'order_id': order.id,
-        'order_date': order.order_date.strftime('%B %d, %Y at %I:%M %p'),
-        'total_amount': order.total_amount,
-        'order_items': order.items.all(),
-        'special_instructions': order.special_instructions,
-        'status': order.get_status_display(),
-    }
-    
-    html_message = render_to_string('emails/order_status_update.html', context)
-    plain_message = strip_tags(html_message)
-    
-    send_mail(
-        subject='Order Confirmation - Cafe Coffee',
-        message=plain_message,
-        from_email=None,
-        recipient_list=[order.customer_email],
-        html_message=html_message,
-        fail_silently=False,
-    )
+    try:
+        context = {
+            'customer_name': order.customer_name,
+            'order_id': order.id,
+            'order_date': order.order_date.strftime('%B %d, %Y at %I:%M %p'),
+            'total_amount': order.total_amount,
+            'order_items': order.items.all(),
+            'special_instructions': order.special_instructions,
+            'status': order.get_status_display(),
+        }
+        
+        html_message = render_to_string('emails/order_status_update.html', context)
+        plain_message = strip_tags(html_message)
+        
+        # Send email with fail_silently=True to prevent blocking
+        send_mail(
+            subject='Order Confirmation - Cafe Coffee',
+            message=plain_message,
+            from_email=None,
+            recipient_list=[order.customer_email],
+            html_message=html_message,
+            fail_silently=True,
+            timeout=5  # 5 second timeout for email sending
+        )
+    except Exception as e:
+        print(f"Error sending email: {str(e)}")
+        # Don't raise the exception - let the order complete even if email fails
 
 def BookTableView(request):
     """

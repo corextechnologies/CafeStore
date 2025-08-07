@@ -187,6 +187,13 @@ CACHES = {
     }
 }
 
+# Email timeout settings
+EMAIL_TIMEOUT = 5  # seconds
+DATABASE_OPTIONS = {
+    'connect_timeout': 5,
+    'options': '-c statement_timeout=5000'  # 5 seconds in milliseconds
+}
+
 # Browser caching settings
 CACHE_MIDDLEWARE_SECONDS = 31536000  # 1 year for static files
 CACHE_MIDDLEWARE_KEY_PREFIX = 'restaurant'
