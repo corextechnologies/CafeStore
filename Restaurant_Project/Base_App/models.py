@@ -79,14 +79,14 @@ class Order(models.Model):
         ('cancelled', 'Cancelled'),
     ]
     
-    customer_name = EncryptedCharField(max_length=1000, db_index=True)  # Encrypted - sensitive customer data (increased length)
-    customer_email = EncryptedEmailField(max_length=1000, db_index=True)  # Encrypted - sensitive customer data
-    customer_phone = EncryptedCharField(max_length=500)  # Encrypted - sensitive customer data (increased length)
-    customer_address = EncryptedTextField()  # Encrypted - sensitive customer data
-    order_date = models.DateTimeField(auto_now_add=True, db_index=True)  # Not encrypted - public timestamp
-    total_amount = models.DecimalField(max_digits=10, decimal_places=2, db_index=True)  # Not encrypted - needed for calculations
-    status = models.CharField(max_length=20, choices=ORDER_STATUS_CHOICES, default='pending', db_index=True)  # Not encrypted - needed for processing
-    special_instructions = EncryptedTextField(blank=True, null=True)  # Encrypted - sensitive customer data
+    customer_name = models.CharField(max_length=1000, db_index=True)
+    customer_email = models.EmailField(max_length=1000, db_index=True)
+    customer_phone = models.CharField(max_length=500)
+    customer_address = models.TextField()
+    order_date = models.DateTimeField(auto_now_add=True, db_index=True)
+    total_amount = models.DecimalField(max_digits=10, decimal_places=2, db_index=True)
+    status = models.CharField(max_length=20, choices=ORDER_STATUS_CHOICES, default='pending', db_index=True)
+    special_instructions = models.TextField(blank=True, null=True)
     
     def __str__(self):
         return f"Order #{self.id} - {self.customer_name} - {self.order_date.strftime('%Y-%m-%d %H:%M')}"
@@ -102,13 +102,13 @@ class Order(models.Model):
         ]
 
 class OrderItem(models.Model):
-    order = models.ForeignKey(Order, related_name='items', on_delete=models.CASCADE, db_index=True)  # Not encrypted - foreign key
-    product_name = EncryptedCharField(max_length=1000, db_index=True)  # Encrypted - sensitive product data (increased length)
-    product_price = models.DecimalField(max_digits=10, decimal_places=2)  # Not encrypted - needed for calculations
-    quantity = models.PositiveIntegerField()  # Not encrypted - needed for calculations
-    sugar_level = models.CharField(max_length=20)  # Not encrypted - operational data
-    spoon_preference = models.CharField(max_length=20)  # Not encrypted - operational data
-    extra_demands = EncryptedTextField(blank=True, null=True)  # Encrypted - sensitive customer preferences
+    order = models.ForeignKey(Order, related_name='items', on_delete=models.CASCADE, db_index=True)
+    product_name = models.CharField(max_length=1000, db_index=True)
+    product_price = models.DecimalField(max_digits=10, decimal_places=2)
+    quantity = models.PositiveIntegerField()
+    sugar_level = models.CharField(max_length=20)
+    spoon_preference = models.CharField(max_length=20)
+    extra_demands = models.TextField(blank=True, null=True)
     
     def __str__(self):
         return f"{self.product_name} x{self.quantity} - Order #{self.order.id}"
@@ -134,13 +134,13 @@ class OrderItem(models.Model):
         ]
 
 class BookTable(models.Model):
-    name = EncryptedCharField(max_length=1000, db_index=True)  # Encrypted - sensitive customer data (increased length)
-    email = EncryptedEmailField(max_length=1000, db_index=True)  # Encrypted - sensitive customer data
-    phone = EncryptedCharField(max_length=500)  # Encrypted - sensitive customer data (increased length)
-    date = models.DateField(db_index=True)  # Not encrypted - public booking date
+    name = models.CharField(max_length=1000, db_index=True)
+    email = models.EmailField(max_length=1000, db_index=True)
+    phone = models.CharField(max_length=500)
+    date = models.DateField(db_index=True)
     guests = models.IntegerField(
         validators=[MinValueValidator(1), MaxValueValidator(20)]
-    )  # Not encrypted - operational data
+    )
 
     def __str__(self):
         return f"{self.name} - {self.date}"
