@@ -297,8 +297,34 @@ def process_checkout(request):
             'message': 'An error occurred while processing your order. Please try again.'
         }, status=500)
 
+import logging
+logger = logging.getLogger('Base_App')
+
+def send_email_with_retry(subject, message, from_email, recipient_list, html_message=None, max_retries=3):
+    """Helper function to send email with retries"""
+    from time import sleep
+    
+    for attempt in range(max_retries):
+        try:
+            send_mail(
+                subject=subject,
+                message=message,
+                from_email=from_email,
+                recipient_list=recipient_list,
+                html_message=html_message,
+                fail_silently=False
+            )
+            return True
+        except Exception as e:
+            if attempt < max_retries - 1:
+                sleep(2 ** attempt)  # Exponential backoff
+                continue
+            else:
+                logger.error(f"Failed to send email: {str(e)}")
+                return False
+
 def send_email_task(order):
-    """Background task to send email"""
+    """Background task to send email with improved error handling"""
     try:
         context = {
             'customer_name': order.customer_name,
@@ -313,16 +339,19 @@ def send_email_task(order):
         html_message = render_to_string('emails/order_status_update.html', context)
         plain_message = strip_tags(html_message)
         
-        send_mail(
+        success = send_email_with_retry(
             subject='Order Confirmation - Cafe Coffee',
             message=plain_message,
             from_email=None,
             recipient_list=[order.customer_email],
-            html_message=html_message,
-            fail_silently=True
+            html_message=html_message
         )
+        
+        if not success:
+            logger.error(f"Failed to send confirmation email for Order #{order.id}")
+            
     except Exception as e:
-        print(f"Error sending email: {str(e)}")
+        logger.error(f"Error processing Order #{order.id}: {str(e)}")
 
 def send_initial_order_email(order):
     """
@@ -333,7 +362,7 @@ def send_initial_order_email(order):
     email_thread.start()
 
 def send_booking_email_task(booking):
-    """Background task to send booking confirmation email"""
+    """Background task to send booking confirmation email with improved error handling"""
     try:
         context = {
             'customer_name': booking.name,
@@ -346,16 +375,22 @@ def send_booking_email_task(booking):
         html_message = render_to_string('emails/booking_confirmation.html', context)
         plain_message = strip_tags(html_message)
         
-        send_mail(
+        logger.info(f"Preparing to send booking confirmation email for booking ID {booking.id}")
+        success = send_email_with_retry(
             subject='Booking Confirmation - Cafe Coffee',
             message=plain_message,
             from_email=None,
             recipient_list=[booking.email],
-            html_message=html_message,
-            fail_silently=True
+            html_message=html_message
         )
+        
+        if success:
+            logger.info(f"Successfully sent booking confirmation email for booking ID {booking.id}")
+        else:
+            logger.error(f"Failed to send booking confirmation email for booking ID {booking.id}")
+            
     except Exception as e:
-        print(f"Error sending booking confirmation email: {str(e)}")
+        logger.error(f"Error in send_booking_email_task for booking ID {booking.id}: {str(e)}")
 
 def BookTableView(request):
     """
