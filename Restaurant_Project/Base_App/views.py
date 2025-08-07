@@ -332,74 +332,95 @@ def send_initial_order_email(order):
     email_thread.daemon = True  # Thread will be terminated when main program exits
     email_thread.start()
 
+def send_booking_email_task(booking):
+    """Background task to send booking confirmation email"""
+    try:
+        context = {
+            'customer_name': booking.name,
+            'customer_email': booking.email,
+            'customer_phone': booking.phone,
+            'booking_date': booking.date.strftime('%B %d, %Y'),
+            'number_of_guests': booking.guests,
+        }
+        
+        html_message = render_to_string('emails/booking_confirmation.html', context)
+        plain_message = strip_tags(html_message)
+        
+        send_mail(
+            subject='Booking Confirmation - Cafe Coffee',
+            message=plain_message,
+            from_email=None,
+            recipient_list=[booking.email],
+            html_message=html_message,
+            fail_silently=True
+        )
+    except Exception as e:
+        print(f"Error sending booking confirmation email: {str(e)}")
+
 def BookTableView(request):
     """
     Handle table booking with email confirmation.
-    Optimized with caching and rate limiting.
+    Optimized with threading and better error handling.
     """
     if request.method == 'POST':
         try:
-            # Add request rate limiting
-            client_ip = request.META.get('REMOTE_ADDR')
+            # Add request rate limiting with better IP detection
+            client_ip = request.META.get('REMOTE_ADDR', request.META.get('HTTP_X_FORWARDED_FOR', ''))
             cache_key = f'booking_attempt_{client_ip}'
             if cache.get(cache_key):
                 messages.error(request, 'Please wait a moment before making another booking.')
                 return redirect('book')
             cache.set(cache_key, True, 5)  # 5 seconds cooldown
             
-            # Extract form data
-            name = request.POST.get('name', '').strip()
-            email = request.POST.get('email', '').strip()
-            phone = request.POST.get('phone', '').strip()
-            date_str = request.POST.get('date', '').strip()
-            guests = int(request.POST.get('guests', 1))
-            
-            # Validation
-            if not all([name, email, phone, date_str]):
-                messages.error(request, 'Please fill in all required fields.')
+            try:
+                # Extract form data with proper error handling
+                name = request.POST.get('name', '').strip()
+                email = request.POST.get('email', '').strip()
+                phone = request.POST.get('phone', '').strip()
+                date_str = request.POST.get('date', '').strip()
+                
+                try:
+                    guests = int(request.POST.get('guests', 1))
+                except (ValueError, TypeError):
+                    messages.error(request, 'Invalid number of guests.')
+                    return redirect('book')
+                
+                # Validation
+                if not all([name, email, phone, date_str]):
+                    messages.error(request, 'Please fill in all required fields.')
+                    return redirect('book')
+                
+                if guests < 1 or guests > 20:
+                    messages.error(request, 'Number of guests must be between 1 and 20.')
+                    return redirect('book')
+                
+                try:
+                    # Convert date string to date object
+                    booking_date = datetime.strptime(date_str, '%Y-%m-%d').date()
+                except ValueError:
+                    messages.error(request, 'Invalid date format.')
+                    return redirect('book')
+                
+                # Create booking record
+                booking = BookTable.objects.create(
+                    name=name,
+                    email=email,
+                    phone=phone,
+                    date=booking_date,
+                    guests=guests
+                )
+                
+                # Start email sending in background thread
+                email_thread = threading.Thread(target=send_booking_email_task, args=(booking,))
+                email_thread.daemon = True
+                email_thread.start()
+                
+                messages.success(request, 'Table booked successfully! Check your email for confirmation.')
                 return redirect('book')
-            
-            if guests < 1 or guests > 20:
-                messages.error(request, 'Number of guests must be between 1 and 20.')
-                return redirect('book')
-            
-            # Convert date string to date object
-            booking_date = datetime.strptime(date_str, '%Y-%m-%d').date()
-            
-            # Create booking record
-            booking = BookTable.objects.create(
-                name=name,
-                email=email,
-                phone=phone,
-                date=booking_date,
-                guests=guests
-            )
-            
-            # Prepare email context
-            context = {
-                'customer_name': booking.name,
-                'customer_email': booking.email,
-                'customer_phone': booking.phone,
-                'booking_date': booking.date.strftime('%B %d, %Y'),
-                'number_of_guests': booking.guests,
-            }
-            
-            # Render HTML and plain text versions of email
-            html_message = render_to_string('emails/booking_confirmation.html', context)
-            plain_message = strip_tags(html_message)
-            
-            # Send email
-            send_mail(
-                subject='Booking Confirmation - Cafe Coffee',
-                message=plain_message,
-                from_email=None,  # Uses DEFAULT_FROM_EMAIL from settings
-                recipient_list=[booking.email],
-                html_message=html_message,
-                fail_silently=False,
-            )
-            
-            messages.success(request, 'Table booked successfully! Check your email for confirmation.')
-            return redirect('book')
+                
+            except Exception as e:
+                print(f"Error in booking process: {str(e)}")
+                messages.error(request, 'An error occurred while processing your booking. Please try again.')
             
         except Exception as e:
             print(f"Error in booking: {str(e)}")  # For debugging
