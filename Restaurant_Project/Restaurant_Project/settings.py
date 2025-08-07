@@ -187,6 +187,16 @@ CACHES = {
     }
 }
 
+# Timeout settings
+DATA_UPLOAD_MAX_MEMORY_SIZE = 5242880  # 5MB
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 1000
+CSRF_COOKIE_SECURE = False  # Set to True if using HTTPS
+SESSION_COOKIE_SECURE = False  # Set to True if using HTTPS
+
+# Database performance settings
+CONN_MAX_AGE = 60  # 60 seconds persistent connection
+ATOMIC_REQUESTS = False  # Disable transaction for each request
+
 # Email timeout settings
 EMAIL_TIMEOUT = 5  # seconds
 DATABASE_OPTIONS = {

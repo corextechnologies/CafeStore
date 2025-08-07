@@ -193,6 +193,9 @@ def test_server_performance(request):
             'server_time': time.strftime('%Y-%m-%d %H:%M:%S')
         }, status=500)
 
+import threading
+from concurrent.futures import ThreadPoolExecutor, TimeoutError as FutureTimeoutError
+
 @csrf_exempt
 @require_http_methods(['POST'])
 def process_checkout(request):
@@ -211,27 +214,7 @@ def process_checkout(request):
             }, status=429)
         cache.set(cache_key, True, 5)  # 5 seconds cooldown
         
-        # Set a timeout for the entire operation
-        import signal
-        from contextlib import contextmanager
-        
-        @contextmanager
-        def timeout(seconds):
-            def handler(signum, frame):
-                raise TimeoutError("Request timed out")
-            
-            # Set the timeout handler
-            signal.signal(signal.SIGALRM, handler)
-            signal.alarm(seconds)
-            
-            try:
-                yield
-            finally:
-                # Disable the alarm
-                signal.alarm(0)
-        
-        # Execute with timeout
-        with timeout(10):  # 10 second timeout
+        # Process the request with a simple try-except block
         
         data = json.loads(request.body)
         
@@ -314,10 +297,8 @@ def process_checkout(request):
             'message': 'An error occurred while processing your order. Please try again.'
         }, status=500)
 
-def send_initial_order_email(order):
-    """
-    Send initial order confirmation email to customer asynchronously.
-    """
+def send_email_task(order):
+    """Background task to send email"""
     try:
         context = {
             'customer_name': order.customer_name,
@@ -332,19 +313,24 @@ def send_initial_order_email(order):
         html_message = render_to_string('emails/order_status_update.html', context)
         plain_message = strip_tags(html_message)
         
-        # Send email with fail_silently=True to prevent blocking
         send_mail(
             subject='Order Confirmation - Cafe Coffee',
             message=plain_message,
             from_email=None,
             recipient_list=[order.customer_email],
             html_message=html_message,
-            fail_silently=True,
-            timeout=5  # 5 second timeout for email sending
+            fail_silently=True
         )
     except Exception as e:
         print(f"Error sending email: {str(e)}")
-        # Don't raise the exception - let the order complete even if email fails
+
+def send_initial_order_email(order):
+    """
+    Send initial order confirmation email to customer asynchronously using threading.
+    """
+    email_thread = threading.Thread(target=send_email_task, args=(order,))
+    email_thread.daemon = True  # Thread will be terminated when main program exits
+    email_thread.start()
 
 def BookTableView(request):
     """
